@@ -1,8 +1,9 @@
 const express = require('express')
 const dotenv = require('dotenv')
-const userRoutes = require('./routes/userRoute')
-const {errorMiddleware} = require('./utils/ErrorHandler')
 const cookieParser = require('cookie-parser')
+const {errorMiddleware} = require('./utils/ErrorHandler')
+const userRoutes = require('./routes/userRoute')
+const quizRoutes = require('./routes/quizRoute')
 const app = express()
 
 dotenv.config({
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/quiz', quizRoutes)
 
 
 app.use(errorMiddleware)

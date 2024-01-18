@@ -31,7 +31,8 @@ const register = async (req, res, next) => {
         // setting cookie
         return setCookie(res, new_user._id, 201, `${UserfirstName} registered successfully`)
     } catch (error) {
-        next(new ErrorHandler(error.message, 500))
+        console.log(error.message)
+        return next(new ErrorHandler('Internal Server Error', 500));
     }
     
 }
@@ -67,7 +68,8 @@ const login = async (req, res, next) => {
         // else password is not correct
         return next(new ErrorHandler('Invalid email or password', 404))
     } catch (error) {
-        next(new ErrorHandler(error.message, 500))
+        console.log(error.message)
+        return next(new ErrorHandler('Internal Server Error', 500));
     }
 }
 
@@ -84,25 +86,31 @@ const logout = (req, res, next) => {
             message : "logged out"
         })
     } catch (error) {
-        next(new ErrorHandler(error.message, 500))
+        console.log(error.message)
+        return next(new ErrorHandler('Internal Server Error', 500));
     }
 }
 
 const getProfile = async (req, res, next) => {
+    try {
+        // Finding user in the database
+        const profile = await UserCollection.findById(req.user._id);
 
-    // finding user in database
-    const profile = await UserCollection.findById(req.user._id)
+        // User is not available
+        if (!profile) {
+            return next(new errorMiddleware("Profile not found", 404));
+        }
 
-    // user is not available
-    if(!profile){
-        return next(new errorMiddleware("Profile not found", 404))
+        // Returning data of a particular user
+        res.status(200).json({
+            success: true,
+            profile
+        });
+    } catch (error) {
+        console.error(error);
+        return next(new errorMiddleware("Internal Server Error", 500));
     }
+};
 
-    // returning data of particular user
-    res.status(200).json({
-        success : true,
-        profile
-    })
-}
 
 module.exports = {register, login, logout, getProfile}
