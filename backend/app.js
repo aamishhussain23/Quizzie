@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const {errorMiddleware} = require('./utils/ErrorHandler')
 const userRoutes = require('./routes/userRoute')
 const quizRoutes = require('./routes/quizRoute')
+const cors = require('cors')
 const app = express()
 
 dotenv.config({
@@ -12,6 +13,11 @@ dotenv.config({
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({
+    origin : [process.env.FRONTEND_URL, process.env.FRONTEND_URL_2],
+    methods : ["GET", "POST", "PUT", "DELETE"],
+    credentials : true
+}))
 
 app.get('/', (req, res) => {
     res.json({
