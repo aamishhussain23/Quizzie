@@ -114,6 +114,138 @@ const updateQuiz = async (req, res, next) => {
 };
 
 
+const getQuestion = async (req, res, next) => {
+    const { quizId, index } = req.params;
+
+    try {
+        // Finding the quiz 
+        const quiz = await QuizCollection.findById(quizId);
+
+        if (!quiz) {
+            // Quiz not found
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found",
+            });
+        }
+
+        // Ensuring the provided index is valid or not
+        const questionIndex = parseInt(index, 10);
+        if (isNaN(questionIndex) || questionIndex < 0 || questionIndex >= quiz.questions.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid question index",
+            });
+        }
+
+        // Retrieving the question from "questions array" of specific index
+        const questions = quiz.questions[questionIndex];
+
+        res.status(200).json({
+            success: true,
+            quizName: quiz.quizName,
+            quizType: quiz.quizType,
+            timer: quiz.timer,
+            questions,
+        });
+    } catch (error) {
+        console.error("Error in getQuestionAtIndex:", error);
+        return next(new ErrorHandler(error.message, 500));
+    }
+}
+
+const deleteQuestion = async (req, res, next) => {
+    const { quizId, quesIndex } = req.params;
+
+    try {
+        // Finding the quiz 
+        const quizToUpdate = await QuizCollection.findById(quizId);
+
+        if (!quizToUpdate) {
+            // Quiz not found
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found",
+            });
+        }
+
+        // Ensuring the provided question index is valid
+        const questionIndexToDelete = parseInt(quesIndex, 10);
+        if (isNaN(questionIndexToDelete) || questionIndexToDelete < 0 || questionIndexToDelete >= quizToUpdate.questions.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid question index",
+            });
+        }
+
+        // Deleting the specified question
+        quizToUpdate.questions.splice(questionIndexToDelete, 1);
+
+        // Save the updated quiz in the database
+        const updatedQuiz = await quizToUpdate.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Question deleted successfully`,
+            updatedQuiz,
+        });
+    } catch (error) {
+        console.error("Error in deleteSpecificQuestion:", error);
+        return next(new ErrorHandler(error.message, 500));
+    }
+}
+
+
+const deleteOption = async (req, res, next) => {
+    const { quizId, quesIndex, optionIndex } = req.params;
+
+    try {
+        // Finding the quiz 
+        const quizToUpdate = await QuizCollection.findById(quizId);
+
+        if (!quizToUpdate) {
+            // Quiz not found
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found",
+            });
+        }
+
+        // Ensuring the provided question index is valid or not
+        const questionIndex = parseInt(quesIndex, 10);
+        if (isNaN(questionIndex) || questionIndex < 0 || questionIndex >= quizToUpdate.questions.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid question index",
+            });
+        }
+
+        // Ensuring the provided option index is valid or not
+        const optionIndexToDelete = parseInt(optionIndex, 10);
+        if (isNaN(optionIndexToDelete) || optionIndexToDelete < 0 || optionIndexToDelete >= quizToUpdate.questions[questionIndex].options.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid option index",
+            });
+        }
+
+        // Deleting the specific option
+        quizToUpdate.questions[questionIndex].options.splice(optionIndexToDelete, 1);
+
+        // Saving the updated quiz in the database
+        const updatedQuiz = await quizToUpdate.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Deleted successfully`,
+        });
+    } catch (error) {
+        console.error("Error in deleteSpecificOption:", error);
+        return next(new ErrorHandler(error.message, 500));
+    }
+}
+
+
 const deleteQuiz = async (req, res, next) => {
     const userId = req.user._id;
     const quizId = req.params.id;
@@ -141,4 +273,4 @@ const deleteQuiz = async (req, res, next) => {
 
 
 
-module.exports = {createQuiz, getAllQuizes, updateQuiz, deleteQuiz}
+module.exports = {createQuiz, getAllQuizes, updateQuiz, getQuestion, deleteOption, deleteQuestion, deleteQuiz}
