@@ -11,15 +11,11 @@
    width: 100%;
    position: relative;
    background-color: var(--bg-color-2);
+   /* border: 2px solid green; */
 }
 
-/* body, html{
-  height: 100vh;
-  width: 100%;
-} */
-
 a{
-  text-decoration: none;
+  /* text-decoration: none; */
   color: black;
 }
 
@@ -46,15 +42,3 @@ a{
   --font2 : 'Jomhuria' 
 }
 
-.dark_overlay{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); 
-  z-index: 999; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
