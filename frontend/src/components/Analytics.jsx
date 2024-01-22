@@ -1,21 +1,59 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "../styles/analytics.module.css";
 import del from "../assets/delete.png";
 import edit from "../assets/edit.png";
 import share from "../assets/share.png";
 import { Link } from "react-router-dom";
+import { Context } from "..";
+import axios from "axios";
+import { quizServer } from "../App";
+import toast from "react-hot-toast";
 
-const Analytics = () => {
-  const data = [
-    { id: 1, name: "Quiz 1", createdOn: "01 Sep, 2023", impression: 345 },
-    { id: 2, name: "Quiz 2", createdOn: "04 Sep, 2023", impression: 667 },
-    { id: 3, name: "Quiz 2", createdOn: "04 Sep, 2023", impression: 667 },
-    { id: 4, name: "Quiz 2", createdOn: "04 Sep, 2023", impression: 667 },
-    { id: 1, name: "Quiz 1", createdOn: "01 Sep, 2023", impression: 345 },
-  ];
+const Analytics = () => { 
 
+  const {user, setUser, loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
+
+  const [quizes, setQuizes] = useState([{}])
+  const [deleteQuizID, setDeleteQuizID] = useState("")
+
+  const getAllQuizes = async (userId) => {
+    setLoading(true)
+    try {
+      const {data} = await axios.get(`${quizServer}/getAllQuizes/${userId}`, { withCredentials: true });
+      
+      setLoading(false)
+      setIsAuthenticated(true)
+      setQuizes(data.quizzes);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+    }
+  };
+
+  const handleDeletion = async () => {
+    setLoading(true)
+    try {
+      const {data} = await axios.delete(`${quizServer}/delete-quize/${deleteQuizID}`, {withCredentials : true});
+      setLoading(false)
+      toast.success(data.message)
+      setIsAuthenticated(true)
+    } catch (error) {
+      toast.error(error.response.data.message)
+      console.error('Error deleting quiz:', error);
+    }
+    setDeleteQuizID("")
+    getAllQuizes(user._id)
+  };
+
+  useEffect(() => {
+    // Fetch quizzes when the component mounts
+    if (user && user._id) {
+      getAllQuizes(user._id);
+    }
+  }, [user]);
+  console.log(quizes)
   return (
-    <div className={styles.analytics}>
+    <>
+      <div className={styles.analytics}>
       <h2>Quiz Analytics</h2>
       <div className={styles.table_div}>
         <table>
@@ -29,27 +67,53 @@ const Analytics = () => {
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((row) => (
-              <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>{row.name}</td>
-                <td>{row.createdOn}</td>
-                <td>{row.impression}</td>
+          {
+            loading ? <span style={{textAlign : 'center'}}>Loading...</span> :
+            
+            <tbody>
+          {quizes.map((quiz, index) => {
+            const createdDate = new Date(quiz.createdAt);
+            const formattedDate = createdDate.toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            return (
+              <tr key={quiz._id}>
+                <td>{index + 1}</td>
+                <td>{quiz.quizName}</td>
+                <td>{formattedDate}</td>
+                <td>{quiz.impressions}</td>
                 <td className={styles.images}>
                   <img src={edit} alt="description" />
-                  <img src={del} alt="description" />
+                  <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
                   <img src={share} alt="description" />
                 </td>
                 <td>
                   <Link to="#">Question Wise Analysis</Link>
                 </td>
               </tr>
-            ))}
+            );
+          })}
+
           </tbody>
+          }
         </table>
       </div>
     </div>
+
+    {
+
+      deleteQuizID !== "" ? 
+      <div onClick={() => setDeleteQuizID("")} className={styles.dark_overlay}>
+
+        <div onClick={(e) => e.stopPropagation()} className={styles.deletePopup}>
+          <span>Are you confirm you want to delete ?</span>
+          <div className={styles.btn}>
+            <button onClick={handleDeletion} className={styles.deletebtn}>Confirm Delete</button>
+            <button onClick={() => setDeleteQuizID("")} className={styles.cancelbtn}>Cancel</button>
+          </div>
+        </div>
+      </div> : null
+    }
+    </>
   );
 };
 

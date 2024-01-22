@@ -1,5 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "../styles/leftsidebar.module.css";
+import { userServer } from "../App";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { Context } from "..";
+import { Navigate } from "react-router-dom";
+
 
 const Leftsidebar = ({
   dashboard,
@@ -29,6 +35,22 @@ const Leftsidebar = ({
     setAnalytics(false);
   };
 
+  const {loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
+
+  const logoutApi = async () => {
+    try {
+      const {data} = await axios.get(`${userServer}/logout`, {withCredentials : true})
+      setLoading(false)
+      toast.success(data.message)
+      setIsAuthenticated(false)
+    } catch (error) {
+      setIsAuthenticated(true)
+      toast.error(error.response.data.message)
+    }
+  } 
+
+  if(isAuthenticated === false) return <Navigate to={'/'}/>
+ 
   return (
     <div className={styles.leftSideBar}>
       <h2>QUIZZIE</h2>
@@ -54,7 +76,7 @@ const Leftsidebar = ({
       </div>
       <div className={styles.logoutSection}>
         <div className={styles.line}></div>
-        <span>LOGOUT</span>
+        <span onClick={logoutApi}>LOGOUT</span>
       </div>
     </div>
   );
