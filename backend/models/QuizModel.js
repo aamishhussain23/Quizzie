@@ -31,6 +31,10 @@ const QuizSchema = new mongoose.Schema({
         required: true,
     },
     questions: [QuestionSchema], // Array of questions
+    impressions : {
+        type : Number,
+        default : 0,
+    },
     timer: {
         type: Number,
         required: true,
