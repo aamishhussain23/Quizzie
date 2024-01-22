@@ -1,0 +1,122 @@
+.parent{
+    height: 100vh;
+    width: 100%;
+    background-color: #041325;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.childBox{
+    height: 90%;
+    width: 90%;
+    background-color: white;
+    border-radius: 0.5rem;
+    font-family: var(--font1);
+    font-weight: 700;
+    color: var(--heading-color);
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.section_1{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.section_1 span{
+    font-size: 1.3rem;
+}
+
+.timer{
+    color: var(--error-color);
+}
+
+.section_2, .section_3{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    height: 80%;
+    align-items: center;
+    font-size: 1.2rem;
+    flex-wrap: wrap;
+    /* padding: 0% 5%; */
+}
+
+.section_2 > div, .section_3 > div{
+    height: 6rem;
+    width: 15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    background-color: #F0F0F0;
+}
+
+.childBox button{
+    width: 15rem;
+    height: 2rem;
+    bottom: 4%;
+    position: absolute;
+    color: white;
+    background-color: var(--green-color);
+    border-radius: 0.5rem;
+    font-family: var(--font1);
+    font-weight: 600;
+    border: none;
+    
+}
+
+*{
+    /* border: 1px solid red; */
+}
+
+@media (max-width: 750px){
+    .childBox{
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;
+        font-size: 0.8rem;
+    }
+    
+    .parent h1{
+        margin-top: 5%;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .section_2 > div, .section_3 > div{
+        height: 4rem;
+    }
+
+    .option2{
+        margin-bottom: 10%;
+    }
+
+    .option3{
+        margin-top: 10%;
+    }
+
+    .section_2{
+        align-items: flex-end;
+        height: 60%;
+        justify-content: center;
+    }
+    .section_3{
+        align-items: flex-start;
+        height: 60%;
+        justify-content: center;
+    }
+
+    .childBox button{
+        
+        bottom: 2%;
+        
+        
+    }
+    
+}
