@@ -49,7 +49,7 @@ const Leftsidebar = ({
     }
   } 
 
-  if(isAuthenticated === false) return <Navigate to={'/'}/>
+  // if(isAuthenticated === false) return <Navigate to={'/'}/>
  
   return (
     <div className={styles.leftSideBar}>

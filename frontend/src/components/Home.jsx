@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styles from "../styles/home.module.css";
 import Analytics from "./Analytics";
 import Dashboard from "./Dashboard";
 import Popup1 from "./Popup1";
 import Createquiz from "./Createquiz";
 import Leftsidebar from "./Leftsidebar";
+import { Context } from "..";
+import axios from "axios";
+import { userServer } from "../App";
 
 const Home = () => {
   const [dashboard, setDashboard] = useState(true);
@@ -12,6 +15,33 @@ const Home = () => {
   const [createQuiz, setCreateQuiz] = useState(false);
 
   const [hidePopup1, setHidePopup1] = useState(false);
+  // const [deleteQuizID, setDeleteQuizID] = useState("")
+
+
+  const [quizname, setQuizName] = useState("")
+  const [quizType, setQuizType] = useState("Q&A")
+
+  const {user, setUser, loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
+  // const [user, setUser] = useState({})
+
+  const getMyProfileApi = async () => {
+    setLoading(true)
+    try {
+      const {data} = await axios.get(`${userServer}/getProfile`, {withCredentials : true})
+      setLoading(false)
+      setUser(data.profile)
+      setIsAuthenticated(true)
+    } catch (error) {
+      setLoading(false)
+      setIsAuthenticated(false)
+      console.log(error)
+    }
+    
+  }
+
+  useEffect(() => {
+    getMyProfileApi()
+  }, [])
 
   return (
     <div className={`container ${styles.parent}`}>
@@ -38,9 +68,11 @@ const Home = () => {
           className={styles.dark_overlay}
         >
           {hidePopup1 ? (
-            <Createquiz />
+            <Createquiz quizName={quizname} quizType={quizType} />
           ) : (
             <Popup1
+              setQuizName={setQuizName}
+              setQuizType={setQuizType}
               hidePopup1={hidePopup1}
               setCreateQuiz={setCreateQuiz}
               setDashboard={setDashboard}

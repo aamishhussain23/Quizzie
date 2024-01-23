@@ -1,9 +1,8 @@
 import React, {useState} from "react";
 import styles from '../styles/popup1.module.css'
 
-const Popup1 = ({hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
+const Popup1 = ({setQuizName, setQuizType, hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
 
-    const [quizType, setQuizType] = useState("")
   const [qa, setQa] = useState(true)
   const [poll, setPoll] = useState(false)
 
@@ -19,7 +18,7 @@ const Popup1 = ({hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
     setPoll(true)
     setQa(false)
   }
-
+  
   return (
     <div
       style={{ display: hidePopup1 ? "none" : "flex" }}
@@ -31,6 +30,7 @@ const Popup1 = ({hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
         name="quizName"
         id="quizName"
         placeholder="Quiz name"
+        onChange={(e) => setQuizName(e.target.value)}
       />
       <div className={styles.quizType}>
         <span>Quiz Type</span>

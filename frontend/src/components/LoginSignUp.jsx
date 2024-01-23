@@ -69,7 +69,7 @@ const LoginSignUp = () => {
         }
     }
 
-    if(isAuthenticated) return <Navigate to={'/dashboard'}/>
+    if(isAuthenticated) return <Navigate to={'/home'}/>
 
   return (
     <div className={`${styles.parent} container`}>
