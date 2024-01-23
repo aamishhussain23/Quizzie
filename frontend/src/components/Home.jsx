@@ -43,6 +43,8 @@ const Home = () => {
     getMyProfileApi()
   }, [])
 
+  // console.log(user._id)
+
   return (
     <div className={`container ${styles.parent}`}>
       <Leftsidebar
@@ -55,7 +57,7 @@ const Home = () => {
         setHidePopup1={setHidePopup1}
       />
       {dashboard ? (
-        <Dashboard />
+        <Dashboard id={user._id} />
       ) : analytics ? (
         <Analytics />
       ) : createQuiz ? (

@@ -8,6 +8,8 @@ import { Context } from "..";
 import axios from "axios";
 import { quizServer } from "../App";
 import toast from "react-hot-toast";
+import Viewquizanalysis from "./Viewquizanalysis";
+import Viewpollanalysis from "./Viewpollanalysis";
 
 const Analytics = () => { 
 
@@ -15,6 +17,9 @@ const Analytics = () => {
 
   const [quizes, setQuizes] = useState([{}])
   const [deleteQuizID, setDeleteQuizID] = useState("")
+
+  const [viewquizanalysis, setViewquizanalysis] = useState(false)
+  const [viewpollanalysis, setViewpollanalysis] = useState(false) 
 
   const getAllQuizes = async (userId) => {
     setLoading(true)
@@ -53,7 +58,13 @@ const Analytics = () => {
   console.log(quizes)
   return (
     <>
-      <div className={styles.analytics}>
+      { 
+  viewquizanalysis ? (
+    <Viewquizanalysis />
+  ) : viewpollanalysis ? (
+    <Viewpollanalysis />
+  ) : (
+    <div className={styles.analytics}>
       <h2>Quiz Analytics</h2>
       <div className={styles.table_div}>
         <table>
@@ -68,36 +79,38 @@ const Analytics = () => {
             </tr>
           </thead>
           {
-            loading ? <span style={{textAlign : 'center'}}>Loading...</span> :
-            
-            <tbody>
-          {quizes.map((quiz, index) => {
-            const createdDate = new Date(quiz.createdAt);
-            const formattedDate = createdDate.toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+            loading ? <span style={{ textAlign: 'center' }}>Loading...</span> :
 
-            return (
-              <tr key={quiz._id}>
-                <td>{index + 1}</td>
-                <td>{quiz.quizName}</td>
-                <td>{formattedDate}</td>
-                <td>{quiz.impressions}</td>
-                <td className={styles.images}>
-                  <img src={edit} alt="description" />
-                  <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
-                  <img src={share} alt="description" />
-                </td>
-                <td>
-                  <Link to="#">Question Wise Analysis</Link>
-                </td>
-              </tr>
-            );
-          })}
+              <tbody>
+                {quizes.map((quiz, index) => {
+                  const createdDate = new Date(quiz.createdAt);
+                  const formattedDate = createdDate.toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
-          </tbody>
+                  return (
+                    <tr key={quiz._id}>
+                      <td>{index + 1}</td>
+                      <td>{quiz.quizName}</td>
+                      <td>{formattedDate}</td>
+                      <td>{quiz.impressions}</td>
+                      <td className={styles.images}>
+                        <img src={edit} alt="description" />
+                        <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
+                        <img src={share} alt="description" />
+                      </td>
+                      <td>
+                        <Link onClick={() => setViewpollanalysis(true)} to="#">Question Wise Analysis</Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+
+              </tbody>
           }
         </table>
       </div>
     </div>
+  )
+}
 
     {
 

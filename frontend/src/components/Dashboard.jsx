@@ -1,22 +1,53 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "../styles/dashboard.module.css";
 import eye from "../assets/eye.png";
+import { quizServer } from "../App";
+import axios from "axios";
+import { Context } from "..";
 
-const Dashboard = () => {
+const Dashboard = ({ id }) => {
+  const [quizes, setQuizes] = useState([]);
+  const { user, loading, setLoading } = useContext(Context);
+
+  useEffect(() => {
+    getAllQuizes();
+  }, [id]);
+
+  const getAllQuizes = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, { withCredentials: true });
+
+      const quizzesData = data.quizzes || [];
+
+      const sortedQuizzes = quizzesData.sort((a, b) => b.impressions - a.impressions);
+
+      setQuizes(sortedQuizzes);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+      setLoading(false);
+    }
+  };
+
+  const totalQuestions = quizes.reduce((total, quiz) => total + quiz.questions.length, 0);
+
+  console.log(quizes);
+
   return (
     <div className={styles.dashboard}>
       <div className={styles.stats}>
         <div className={styles.quiz}>
           <p>
             {" "}
-            <span>12</span> Quiz
+            <span>{quizes.length}</span> Quiz
           </p>
           <p>Created</p>
         </div>
         <div className={styles.question}>
           <p>
             {" "}
-            <span>110</span> questions
+            <span>{totalQuestions}</span> questions
           </p>
           <p>Created</p>
         </div>
@@ -24,77 +55,39 @@ const Dashboard = () => {
           <p>
             {" "}
             <span>
-              1.4 <span>K</span>
+              {quizes.reduce((total, quiz) => total + quiz.impressions, 0) >= 1000
+                ? (quizes.reduce((total, quiz) => total + quiz.impressions, 0) / 1000).toFixed(1) + " K"
+                : quizes.reduce((total, quiz) => total + quiz.impressions, 0)}
             </span>{" "}
-            Total
+            Total Impressions
           </p>
-          <p>Impressions</p>
         </div>
       </div>
       <div className={styles.box}>
-        <p>Trending Quizs</p>
-        <div className={styles.trending}>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
+        <p>Trending Quizzes</p>
+        {
+          loading ? 'Loading...' : 
+
+            <div className={styles.trending}>
+            {Array.isArray(quizes) &&
+              quizes.map((quiz, index) => (
+                <div className={styles.quizBox} key={index}>
+                  <div className={styles.para1}>
+                    <span>{quiz.quizName}</span>{" "}
+                    <div className={styles.numberEye}>
+                      <span>
+                        {quiz.impressions >= 1000 ? (quiz.impressions / 1000).toFixed(1) + " K" : quiz.impressions}
+                      </span>
+                      <img src={eye} alt="" />
+                    </div>
+                  </div>
+                  <p className={styles.para2}>
+                    Created on : {new Date(quiz.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+                  </p>
+                </div>
+              ))}
           </div>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
-          </div>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
-          </div>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
-          </div>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
-          </div>
-          <div className={styles.quizBox}>
-            <div className={styles.para1}>
-              <span>Quiz1</span>{" "}
-              <div className={styles.numberEye}>
-                <span>667</span>
-                <img src={eye} alt="" />
-              </div>
-            </div>
-            <p className={styles.para2}>Created on : 04 Sep, 2023</p>
-          </div>
-        </div>
+        }
       </div>
     </div>
   );
