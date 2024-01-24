@@ -10,8 +10,9 @@ import { quizServer } from "../App";
 import toast from "react-hot-toast";
 import Viewquizanalysis from "./Viewquizanalysis";
 import Viewpollanalysis from "./Viewpollanalysis";
+import Sharepopup from "./Sharepopup";
 
-const Analytics = () => {
+const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGetLink}) => {
   const { user, setUser, loading, setLoading, isAuthenticated, setIsAuthenticated } = useContext(Context)
   const [quizes, setQuizes] = useState([{}])
   const [deleteQuizID, setDeleteQuizID] = useState("")
@@ -34,6 +35,37 @@ const Analytics = () => {
       console.error('Error fetching quizzes:', error);
     }
   };
+
+  const handleShareQuiz = (id, type) => {
+    let link;
+    if (type === "Q&A") {
+      link = `http://localhost:3000/playQuiz/${id}`;
+    } else if (type === "Poll") {
+      link = `http://localhost:3000/Poll/${id}`;
+    } else {
+      link = "";
+    }
+  
+    if (link !== "") {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(link)
+          .then(() => toast.success("Link Copied to clipboard"))
+          .catch(err => console.error('Failed to copy text: ', err));
+      } else {
+        // Clipboard API is not available, use document.execCommand
+        const textarea = document.createElement("textarea");
+        textarea.value = link;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        toast.success("Link Copied to clipboard");
+      }
+    } else {
+      toast.error("No link is available. Please try again later.");
+    }
+  }
+  
 
   const handleDeletion = async () => {
     setLoading(true)
@@ -99,7 +131,7 @@ const Analytics = () => {
                         <td className={styles.images}>
                           <img src={edit} alt="description" />
                           <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
-                          <img src={share} alt="description" />
+                          <img onClick={() => {handleShareQuiz(quiz._id, quiz.quizType); setAnalysisQuizType(quiz.quizType); setAnalysisQuizID(quiz._id)}} src={share} alt="description" />
                         </td>
                         <td>
                           <Link onClick={() => setViewpollanalysis(true)} to="#">Question Wise Analysis</Link>
@@ -124,6 +156,17 @@ const Analytics = () => {
           </div>
         </div>
       ) : null}
+
+      {
+        getLink ?  
+        <div className={styles.dark_overlay}>
+          <Sharepopup quizId={quizId} quizType={quizType} setAnalytics={setAnalytics} setGetLink={setGetLink}/>
+        </div>
+
+        :
+
+        null
+      }
     </>
   );
 };

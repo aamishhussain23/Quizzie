@@ -10,7 +10,7 @@ import axios from 'axios'
 import { quizServer } from '../App'
 import { Context } from "..";
 
-const Createquiz = ({setDashboard, setCreateQuiz, quizName, quizType}) => {
+const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDashboard, setCreateQuiz, quizName, quizType}) => {
   const [questions, setQuestions] = useState([{
     question: "",
     optionType: "",
@@ -26,7 +26,7 @@ const Createquiz = ({setDashboard, setCreateQuiz, quizName, quizType}) => {
   const [options, setOptions] = useState(["", ""]);
   const [count, setCount] = useState(1)
   const [timer, setTimer] = useState(0)
-  const [quizId, setQuizID] = useState("")
+  // const [quizId, setQuizID] = useState("")
   const questionRefs = questions.map(() => React.createRef());
 
   const handleRemoveQuestion = (index) => {
@@ -107,9 +107,10 @@ const Createquiz = ({setDashboard, setCreateQuiz, quizName, quizType}) => {
       
       setQuizID(data.quizId);
       setLoading(false);
-      toast.success(data.message);
-      setDashboard(true); 
+      toast.success(data.message); 
       setCreateQuiz(false);
+      setAnalytics(true);
+      setGetLink(true);
   } catch (error) {
       // Handle the error here
       console.error(error);
@@ -215,7 +216,7 @@ const Createquiz = ({setDashboard, setCreateQuiz, quizName, quizType}) => {
       <section className={styles.section_4}>
         <div className={styles.cancelContinue}>
           <button className={styles.cancelbtn} onClick={() => {setDashboard(true); setCreateQuiz(false);}}>Cancel</button>
-          <button disabled={loading} className={styles.continuebtn} onClick={handleQuizCreation}>Create Quiz</button>
+          <button disabled={loading} className={styles.continuebtn} onClick={handleQuizCreation}>{loading ? 'Wait...' : "Create Quiz"}</button>
         </div>
       </section>
     </div>

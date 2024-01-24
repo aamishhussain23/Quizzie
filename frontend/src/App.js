@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import './index.css'
+import './index.css';
 import LoginSignUp from './components/LoginSignUp';
 import Home from './components/Home';
 import Result from './components/Result';
@@ -16,7 +16,7 @@ function App() {
           <Route path='/' element={<LoginSignUp/>}></Route>
           <Route path='/home' element={<Home/>}></Route>
           <Route path='/result' element={<Result/>}></Route>
-          <Route path='/playQuiz' element={<Playquiz/>}></Route>
+          <Route path='/playQuiz/:id' element={<Playquiz/>}></Route>
         </Routes>
         <Toaster />
     </Router>

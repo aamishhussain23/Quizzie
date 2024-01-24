@@ -13,8 +13,10 @@ const Home = () => {
   const [dashboard, setDashboard] = useState(true);
   const [analytics, setAnalytics] = useState(false);
   const [createQuiz, setCreateQuiz] = useState(false);
-
+  const [getLink, setGetLink] = useState(false);
   const [hidePopup1, setHidePopup1] = useState(false);
+  const [quizId, setQuizID] = useState("")
+  // const [currentGameLink, setCurrentGameLink] = useState("")
   // const [deleteQuizID, setDeleteQuizID] = useState("")
 
 
@@ -59,7 +61,7 @@ const Home = () => {
       {dashboard ? (
         <Dashboard id={user._id} />
       ) : analytics ? (
-        <Analytics />
+        <Analytics quizType={quizType} quizId={quizId} setAnalytics={setAnalytics} setDashboard={setDashboard} getLink={getLink} setGetLink={setGetLink} />
       ) : createQuiz ? (
         <div
           onClick={(e) => {
@@ -70,7 +72,7 @@ const Home = () => {
           className={styles.dark_overlay}
         >
           {hidePopup1 ? (
-            <Createquiz setDashboard={setDashboard} setCreateQuiz={setCreateQuiz} quizName={quizname} quizType={quizType} />
+            <Createquiz quizId={quizId} setQuizID={setQuizID} setAnalytics={setAnalytics} getLink={getLink} setGetLink={setGetLink} setDashboard={setDashboard} setCreateQuiz={setCreateQuiz} quizName={quizname} quizType={quizType} />
           ) : (
             <Popup1
               quizName={quizname}
