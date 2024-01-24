@@ -35,6 +35,7 @@ const createQuiz = async (req, res, next) => {
         res.status(201).json({
             success: true,
             message: `${formattedQuizName} ${quizType} created successfully`,
+            quizId: newQuiz._id,
         });
     } catch (error) {
         console.error("Error in createQuiz:", error);
