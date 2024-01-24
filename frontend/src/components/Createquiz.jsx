@@ -75,33 +75,67 @@ const Createquiz = ({quizName, quizType}) => {
         <span>Max 5 questions</span>
       </section>
       <section className={styles.section_2}>
-        <input 
-          onChange={(e) => {
-            const newQuestions = [...questions];
-            newQuestions[currentIndex].question = e.target.value;
-            setQuestions(newQuestions);
-          }} 
-          value={questions[currentIndex] ? questions[currentIndex].question : ""}
-          type="text" 
-          name="poll question" 
-          placeholder="Poll Question" 
-        />
-        <div className={styles.optionType}>
-          <span>Option Type</span>
-          <label>
-            <input type="radio" name="option" onClick={() => setCurrentOptiontype("text")} />
-            <span>Text</span>
-          </label>
-          <label>
-            <input type="radio" name="option" onClick={() => setCurrentOptiontype("url")} />
-            <span>Image URL</span>
-          </label>
-          <label>
-            <input type="radio" name="option" onClick={() => setCurrentOptiontype("textandurl")} />
-            <span>Text & Image URL</span>
-          </label>
-        </div>
-      </section>
+  <input 
+    onChange={(e) => {
+      const newQuestions = [...questions];
+      newQuestions[currentIndex].question = e.target.value;
+      setQuestions(newQuestions);
+    }} 
+    value={questions[currentIndex] ? questions[currentIndex].question : ""}
+    type="text" 
+    name="poll question" 
+    placeholder="Poll Question" 
+  />
+  <div className={styles.optionType}>
+    <span>Option Type</span>
+    <label>
+      <input 
+        type="radio" 
+        name="option" 
+        value="text"
+        checked={questions[currentIndex]?.optionType === "text"}
+        onClick={() => {
+          setCurrentOptiontype("text");
+          const newQuestions = [...questions];
+          newQuestions[currentIndex].optionType = "text";
+          setQuestions(newQuestions);
+        }} 
+      />
+      <span>Text</span>
+    </label>
+    <label>
+      <input 
+        type="radio" 
+        name="option" 
+        value="url"
+        checked={questions[currentIndex]?.optionType === "url"}
+        onClick={() => {
+          setCurrentOptiontype("url");
+          const newQuestions = [...questions];
+          newQuestions[currentIndex].optionType = "url";
+          setQuestions(newQuestions);
+        }} 
+      />
+      <span>Image URL</span>
+    </label>
+    <label>
+      <input 
+        type="radio" 
+        name="option" 
+        value="textandurl"
+        checked={questions[currentIndex]?.optionType === "textandurl"}
+        onClick={() => {
+          setCurrentOptiontype("textandurl");
+          const newQuestions = [...questions];
+          newQuestions[currentIndex].optionType = "textandurl";
+          setQuestions(newQuestions);
+        }} 
+      />
+      <span>Text & Image URL</span>
+    </label>
+  </div>
+</section>
+
       <section className={styles.section_3}>
         {currentOptionType === "text" && <Typetext />}
         {currentOptionType === "url" && <TypeURL />}
