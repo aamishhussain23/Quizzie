@@ -11,8 +11,8 @@ const Createquiz = ({quizName, quizType}) => {
   const [questions, setQuestions] = useState([{
     question: "",
     optionType: "",
-    options: ["", "", "", ""],
-    correctAnswer: "",
+    options: ["", ""],
+    correctAnswer: null,
     timer: "",
   }])
 
@@ -20,6 +20,8 @@ const Createquiz = ({quizName, quizType}) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState("")
   const [currentOptions, setCurrentOptions] = useState([""])
+  const [correctAnswer, setCorrectAnswer] = useState("")
+  const [options, setOptions] = useState(["", ""]);
   const [count, setCount] = useState(1)
 
   const questionRefs = questions.map(() => React.createRef());
@@ -29,17 +31,23 @@ const Createquiz = ({quizName, quizType}) => {
     newQuestions.splice(index, 1);
     setQuestions(newQuestions);
     setCount(count - 1);
-    // Update currentIndex if necessary
+  
     if (currentIndex >= newQuestions.length) {
       setCurrentIndex(Math.max(newQuestions.length - 1, 0));
     }
+  
+    if (index === currentIndex) {
+      setOptions(newQuestions[currentIndex]?.options || ["", ""]);
+      setCorrectAnswer(newQuestions[currentIndex]?.correctAnswer || null);
+    }
   };
+  
 
   const handleAddQuestion = () => {
     const newQuestion = {
       question: "",
       optionType: "",
-      options: ["", "", "", ""],
+      options: ["", ""],
       correctAnswer: "",
       timer: "",
     };
@@ -137,7 +145,7 @@ const Createquiz = ({quizName, quizType}) => {
 </section>
 
       <section className={styles.section_3}>
-        {currentOptionType === "text" && <Typetext />}
+        {currentOptionType === "text" && <Typetext questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
         {currentOptionType === "url" && <TypeURL />}
         {currentOptionType === "textandurl" && <TypetextandURL />}
       </section>
