@@ -14,6 +14,9 @@ const Dashboard = ({ id }) => {
   }, [id]);
 
   const getAllQuizes = async () => {
+      if (!id) {
+        return;
+    }
     setLoading(true);
     try {
       const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, { withCredentials: true });
@@ -32,7 +35,7 @@ const Dashboard = ({ id }) => {
 
   const totalQuestions = quizes.reduce((total, quiz) => total + quiz.questions.length, 0);
 
-  console.log(quizes);
+  // console.log(quizes);
 
   return (
     <div className={styles.dashboard}>

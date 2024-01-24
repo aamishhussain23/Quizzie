@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "../styles/createquiz.module.css";
 import cross from "../assets/cross.png";
 import plus from "../assets/plus.png";
@@ -6,16 +6,18 @@ import Typetext from "./Typetext";
 import TypeURL from "./TypeURL";
 import TypetextandURL from "./TypetextandURL";
 import toast from 'react-hot-toast';
+import axios from 'axios'
+import { quizServer } from '../App'
+import { Context } from "..";
 
-const Createquiz = ({quizName, quizType}) => {
+const Createquiz = ({setDashboard, setCreateQuiz, quizName, quizType}) => {
   const [questions, setQuestions] = useState([{
     question: "",
     optionType: "",
     options: ["", ""],
     correctAnswer: null,
-    timer: "",
   }])
-
+  const {loading, setLoading} = useContext(Context)
   const [currentOptionType, setCurrentOptiontype] = useState("text")
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState("")
@@ -23,7 +25,8 @@ const Createquiz = ({quizName, quizType}) => {
   const [correctAnswer, setCorrectAnswer] = useState("")
   const [options, setOptions] = useState(["", ""]);
   const [count, setCount] = useState(1)
-
+  const [timer, setTimer] = useState(0)
+  const [quizId, setQuizID] = useState("")
   const questionRefs = questions.map(() => React.createRef());
 
   const handleRemoveQuestion = (index) => {
@@ -49,7 +52,6 @@ const Createquiz = ({quizName, quizType}) => {
       optionType: "",
       options: ["", ""],
       correctAnswer: "",
-      timer: "",
     };
 
     setQuestions([...questions, newQuestion]);
@@ -63,6 +65,61 @@ const Createquiz = ({quizName, quizType}) => {
   }, [currentIndex, questions]);
 
   console.log(questions)
+
+  const handleQuizCreation = async () => {
+    // Validation
+    
+    
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].question.trim()) {
+        toast.error(`Question ${i+1} is required`);
+        return;
+      }
+      if (!questions[i].optionType.trim()) {
+        toast.error(`Option type for question ${i+1} is required`);
+        return;
+      }
+      if (questions[i].options.length < 2) {
+        toast.error(`Question ${i+1} should have at least two options`);
+        return;
+      }
+      for (let j = 0; j < questions[i].options.length; j++) {
+        if (!questions[i].options[j].trim()) {
+          toast.error(`Option ${j+1} for question ${i+1} is required`);
+          return;
+        }
+      }
+      if (questions[i].correctAnswer === null) {
+        toast.error(`Correct answer for question ${i+1} is required`);
+        return;
+      }
+    }
+  
+    const obj = {
+      quizName: quizName,
+      quizType: quizType,
+      questions: questions,
+      timer: timer
+    }
+    setLoading(true);
+    try {
+      const {data} = await axios.post(`${quizServer}/create-quiz`, obj, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
+      
+      setQuizID(data.quizId);
+      setLoading(false);
+      toast.success(data.message);
+      setDashboard(true); 
+      setCreateQuiz(false);
+  } catch (error) {
+      // Handle the error here
+      console.error(error);
+      toast.error('An error occurred while creating the quiz');
+      setLoading(false);
+      setDashboard(true); 
+      setCreateQuiz(false);
+  }
+  }
+  
 
   return (
     <div className={styles.popup_2} onClick={(e) => e.stopPropagation()}>
@@ -102,7 +159,7 @@ const Createquiz = ({quizName, quizType}) => {
         name="option" 
         value="text"
         checked={questions[currentIndex]?.optionType === "text"}
-        onClick={() => {
+        onChange={() => {
           setCurrentOptiontype("text");
           const newQuestions = [...questions];
           newQuestions[currentIndex].optionType = "text";
@@ -117,7 +174,7 @@ const Createquiz = ({quizName, quizType}) => {
         name="option" 
         value="url"
         checked={questions[currentIndex]?.optionType === "url"}
-        onClick={() => {
+        onChange={() => {
           setCurrentOptiontype("url");
           const newQuestions = [...questions];
           newQuestions[currentIndex].optionType = "url";
@@ -132,7 +189,7 @@ const Createquiz = ({quizName, quizType}) => {
         name="option" 
         value="textandurl"
         checked={questions[currentIndex]?.optionType === "textandurl"}
-        onClick={() => {
+        onChange={() => {
           setCurrentOptiontype("textandurl");
           const newQuestions = [...questions];
           newQuestions[currentIndex].optionType = "textandurl";
@@ -157,8 +214,8 @@ const Createquiz = ({quizName, quizType}) => {
       </div>
       <section className={styles.section_4}>
         <div className={styles.cancelContinue}>
-          <button className={styles.cancelbtn}>Cancel</button>
-          <button className={styles.continuebtn}>Create Quiz</button>
+          <button className={styles.cancelbtn} onClick={() => {setDashboard(true); setCreateQuiz(false);}}>Cancel</button>
+          <button disabled={loading} className={styles.continuebtn} onClick={handleQuizCreation}>Create Quiz</button>
         </div>
       </section>
     </div>

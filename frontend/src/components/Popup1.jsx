@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import styles from '../styles/popup1.module.css'
+import toast from "react-hot-toast";
 
-const Popup1 = ({setQuizName, setQuizType, hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
+const Popup1 = ({quizName, setQuizName, setQuizType, hidePopup1, setCreateQuiz, setDashboard, setHidePopup1}) => {
 
   const [qa, setQa] = useState(true)
   const [poll, setPoll] = useState(false)
@@ -60,11 +61,18 @@ const Popup1 = ({setQuizName, setQuizType, hidePopup1, setCreateQuiz, setDashboa
           Cancel
         </button>
         <button
-          onClick={() => setHidePopup1(true)}
+          onClick={() => {
+            if (!quizName.trim()) {
+              toast.error('Quiz name is required');
+            } else {
+              setHidePopup1(true);
+            }
+          }}
           className={styles.continuebtn}
         >
           Continue
         </button>
+
       </div>
     </div>
   );

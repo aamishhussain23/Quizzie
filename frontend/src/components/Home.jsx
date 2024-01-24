@@ -64,15 +64,16 @@ const Home = () => {
         <div
           onClick={(e) => {
             e.preventDefault();
-            setCreateQuiz(false);
-            setDashboard(true);
+            // setCreateQuiz(false);
+            // setDashboard(true);
           }}
           className={styles.dark_overlay}
         >
           {hidePopup1 ? (
-            <Createquiz quizName={quizname} quizType={quizType} />
+            <Createquiz setDashboard={setDashboard} setCreateQuiz={setCreateQuiz} quizName={quizname} quizType={quizType} />
           ) : (
             <Popup1
+              quizName={quizname}
               setQuizName={setQuizName}
               setQuizType={setQuizType}
               hidePopup1={hidePopup1}
