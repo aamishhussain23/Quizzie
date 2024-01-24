@@ -7,7 +7,7 @@ const QuestionSchema = new mongoose.Schema({
     },
     optionType: {
         type: String,
-        enum: ['Text', 'Image URL', 'Text & Image URL'],
+        enum: ['text', 'url', 'textandurl'],
         required: true,
     },
     options: [{
