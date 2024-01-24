@@ -131,7 +131,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
                         <td className={styles.images}>
                           <img src={edit} alt="description" />
                           <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
-                          <img onClick={() => {handleShareQuiz(quiz._id, quiz.quizType); setAnalysisQuizType(quiz.quizType); setAnalysisQuizID(quiz._id)}} src={share} alt="description" />
+                          <img onClick={() => handleShareQuiz(quiz._id, quiz.quizType)} src={share} alt="description" />
                         </td>
                         <td>
                           <Link onClick={() => setViewpollanalysis(true)} to="#">Question Wise Analysis</Link>
