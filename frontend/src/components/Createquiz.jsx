@@ -146,8 +146,8 @@ const Createquiz = ({quizName, quizType}) => {
 
       <section className={styles.section_3}>
         {currentOptionType === "text" && <Typetext questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
-        {currentOptionType === "url" && <TypeURL />}
-        {currentOptionType === "textandurl" && <TypetextandURL />}
+        {currentOptionType === "url" && <TypeURL questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
+        {currentOptionType === "textandurl" && <TypetextandURL questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
       </section>
       <div className={styles.timer}>
         <span className={styles.text}>Timer</span>
