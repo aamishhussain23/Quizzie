@@ -134,7 +134,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
                           <img onClick={() => handleShareQuiz(quiz._id, quiz.quizType)} src={share} alt="description" />
                         </td>
                         <td>
-                          <Link onClick={() => setViewpollanalysis(true)} to="#">Question Wise Analysis</Link>
+                          <Link onClick={() => setViewquizanalysis(true)} to="#">Question Wise Analysis</Link>
                         </td>
                       </tr>
                     );

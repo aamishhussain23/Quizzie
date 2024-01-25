@@ -1,27 +1,109 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from "../styles/playquiz.module.css";
+import axios from 'axios';
+import { quizServer } from '../App';
+import toast from 'react-hot-toast';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Playquiz = () => {
+  const [quiz, setQuiz] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [timer, setTimer] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate(); 
+
+  const getQuiz = async () => {
+    try {
+      const {data} = await axios.get(`${quizServer}/getQuiz/${id}`, { withCredentials: true });
+      setQuiz(data.quiz);
+      setTimer(data.quiz.timer);
+      setUserAnswers(data.quiz.questions.map(question => ({
+        _id: question._id,
+        question: question.question,
+        userAnswer: ""
+      }))); 
+    } catch (err) {
+      console.error(err.message);
+      console.log(err)
+      toast.error(`Error: ${err.message}`);
+    }
+  };
+
+  useEffect(() => {  
+    getQuiz();
+  }, [id]);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (currentQuestionIndex < quiz.questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setTimer(quiz.timer);
+      }
+    } else {
+      const timeout = setTimeout(() => setTimer(timer - 1), 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    console.log({
+      quizId: id,
+      questions: userAnswers
+    });
+  }, [timer]);
+
+  if (!quiz) {
+    return <div>Loading...</div>;
+  }
+
+  const question = quiz.questions[currentQuestionIndex];
+
+  const handleOptionClick = (option) => {
+    const newUserAnswers = [...userAnswers];
+    newUserAnswers[currentQuestionIndex].userAnswer = option;
+    setUserAnswers(newUserAnswers);
+  };
+
+  const handleNextClick = () => {
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  };
+
+  const handleSubmit = () => {
+    console.log({
+      quizId: id,
+      questions: userAnswers
+    });
+    navigate('/home');
+  };
+
   return (
     <div className={styles.parent}>
       <div className={styles.childBox}>
         <section className={styles.section_1}>
-            <span>04/04</span>
-            <span className={styles.timer}>00:10s</span>
+            <span>{currentQuestionIndex + 1}/{quiz.questions.length}</span>
+            <span className={styles.timer}>00:{timer}s</span>
         </section>
-        <h1>Your question text comes here, its a sample text.</h1>
+        <h1>{question.question}</h1>
         <section className={styles.section_2}>
-            <div>Option 1</div>
-            <div className={styles.option2}>Option 2</div>
+            {question.options.map((option, index) => (
+              <div 
+                key={index} 
+                className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} 
+                onClick={() => handleOptionClick(option)}
+              >
+                {option}
+              </div>
+            ))}
         </section>
-        <section className={styles.section_3}>
-            <div className={styles.option3}>Option 3</div>
-            <div>Option 4</div>
-        </section>
-        <button>SUBMIT</button>
+        {currentQuestionIndex < quiz.questions.length - 1 ? (
+          <button onClick={handleNextClick}>Next</button>
+        ) : (
+          <button onClick={handleSubmit}>SUBMIT</button>
+        )}
       </div>
     </div>
   )
 }
 
-export default Playquiz
+export default Playquiz;
