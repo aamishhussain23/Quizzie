@@ -26,7 +26,7 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
   const [options, setOptions] = useState(["", ""]);
   const [count, setCount] = useState(1)
   const [timer, setTimer] = useState(0)
-  // const [quizId, setQuizID] = useState("")
+
   const questionRefs = questions.map(() => React.createRef());
 
   const handleRemoveQuestion = (index) => {
@@ -44,6 +44,12 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
       setCorrectAnswer(newQuestions[currentIndex]?.correctAnswer || null);
     }
   };
+
+  const handleClickonCircle = (index) => {
+    setCurrentIndex(index);
+    const currentOptionType = questions[index].optionType;
+    setCurrentOptiontype(currentOptionType);
+  }
   
 
   const handleAddQuestion = () => {
@@ -57,6 +63,7 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
     setQuestions([...questions, newQuestion]);
     setCount(count + 1);
     setCurrentIndex(count);
+    setCurrentOptiontype("text")
   };
 
   useEffect(() => {
@@ -65,10 +72,9 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
   }, [currentIndex, questions]);
 
   console.log(questions)
-
+  console.log(currentOptionType)
   const handleQuizCreation = async () => {
     // Validation
-    
     
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].question.trim()) {
@@ -112,7 +118,6 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
       setAnalytics(true);
       setGetLink(true);
   } catch (error) {
-      // Handle the error here
       console.error(error);
       toast.error('An error occurred while creating the quiz');
       setLoading(false);
@@ -121,7 +126,6 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
   }
   }
   
-
   return (
     <div className={styles.popup_2} onClick={(e) => e.stopPropagation()}>
       <section className={styles.section_1}>
@@ -129,7 +133,7 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
           {Array.from({ length: count }).map((_, index) => (
             <div 
               ref={questionRefs[index]}
-              onClick={() => {setCurrentIndex(index); }} 
+              onClick={() => handleClickonCircle(index)} 
               key={index} 
               className={styles.circle}
             >
