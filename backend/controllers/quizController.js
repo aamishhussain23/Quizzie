@@ -51,22 +51,32 @@ const getAllQuizes = async (req, res, next) => {
         // Retrieve quizzes for the specified user
         const userQuizzes = await QuizCollection.find({ user: userId });
 
+        // Create a copy of each quiz and remove the correctAnswer field from each question
+        let userQuizzesCopy = userQuizzes.map(quiz => {
+            let quizCopy = quiz.toObject();
+            quizCopy.questions.forEach(question => {
+                delete question.correctAnswer;
+            });
+            return quizCopy;
+        });
+
         res.status(200).json({
             success: true,
-            totalQuiz : userQuizzes.length,
-            quizzes: userQuizzes
+            totalQuiz : userQuizzesCopy.length,
+            quizzes: userQuizzesCopy
         });
 
     } catch (error) {
         console.error("Error in getUserQuizzes:", error);
         return next(new ErrorHandler(error.message, 500));
     }
-}
+};
+
 
 
 const updateQuiz = async (req, res, next) => {
-    const { quizId, index } = req.params;
-    const { questions, timer } = req.body;
+    const { quizId } = req.params;
+    const { quizName, questions, timer } = req.body;
 
     try {
         // Finding the quiz 
@@ -80,33 +90,22 @@ const updateQuiz = async (req, res, next) => {
             });
         }
 
-        // Ensuring the provided index is valid or not
-        const questionIndex = parseInt(index, 10);
-        if (isNaN(questionIndex) || questionIndex < 0 || questionIndex >= quizToUpdate.questions.length) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid question",
-            });
-        }
-
-        // Updating the question directly using the provided index
-        quizToUpdate.questions[questionIndex] = {
-            ...quizToUpdate.questions[questionIndex],
-            question: capitalizeFirstLetterOfEachWord(questions[0].question.toLowerCase()), 
-            optionType: questions[0].optionType,
-            options: questions[0].options,
-            correctAnswer: questions[0].correctAnswer,
-        };
-
-        // Updating the timer
+        // Updating the quiz name and timer
+        quizToUpdate.quizName = quizName;
         quizToUpdate.timer = timer;
+
+        // Updating all questions
+        quizToUpdate.questions = questions.map(question => ({
+            ...question,
+            question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
+        }));
 
         // Saving the updated quiz
         const updatedQuiz = await quizToUpdate.save();
 
         res.status(200).json({
             success: true,
-            message: `Question updated successfully`,
+            message: `Quiz updated successfully`,
         });
     } catch (error) {
         console.error("Error in updateQuiz:", error);
@@ -115,8 +114,9 @@ const updateQuiz = async (req, res, next) => {
 };
 
 
-const getQuestion = async (req, res, next) => {
-    const { quizId, index } = req.params;
+
+const getQuiz = async (req, res, next) => {
+    const { quizId } = req.params;
 
     try {
         // Finding the quiz 
@@ -130,30 +130,79 @@ const getQuestion = async (req, res, next) => {
             });
         }
 
-        // Ensuring the provided index is valid or not
-        const questionIndex = parseInt(index, 10);
-        if (isNaN(questionIndex) || questionIndex < 0 || questionIndex >= quiz.questions.length) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid question index",
-            });
-        }
+        quiz.impressions += 1;
+        await quiz.save();
 
-        // Retrieving the question from "questions array" of specific index
-        const questions = quiz.questions[questionIndex];
+        // Create a copy of the quiz object
+        let quizCopy = quiz.toObject();
+
+        // Remove the correctAnswer field from each question
+        quizCopy.questions.forEach(question => {
+            delete question.correctAnswer;
+        });
 
         res.status(200).json({
             success: true,
-            quizName: quiz.quizName,
-            quizType: quiz.quizType,
-            timer: quiz.timer,
-            questions,
+            quiz: quizCopy,
         });
     } catch (error) {
         console.error("Error in getQuestionAtIndex:", error);
         return next(new ErrorHandler(error.message, 500));
     }
-}
+};
+
+
+const checkAnswer = async (req, res, next) => {
+    const { quizId } = req.body;
+    const questions = req.body.questions;
+
+    try {
+        // Finding the quiz 
+        const quiz = await QuizCollection.findById(quizId);
+
+        if (!quiz) {
+            // Quiz not found
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found",
+            });
+        }
+
+        // Checking each question's answer
+        for (const question of questions) {
+            const { _id, userAnswer } = question;
+            const dbQuestion = quiz.questions.find(q => q._id.toString() === _id);
+
+            if (!dbQuestion) {
+                // Question not found
+                return res.status(404).json({
+                    success: false,
+                    message: "Question not found",
+                });
+            }
+
+            // Checking if the user's answer is correct
+            const correctAnswer = dbQuestion.correctAnswer;
+            if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
+                // Incrementing the correct count
+                dbQuestion.correctCount += 1;
+            } else {
+                // Incrementing the incorrect count
+                dbQuestion.incorrectCount += 1;
+            }
+        }
+
+        await quiz.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Answers checked successfully",
+        });
+    } catch (error) {
+        console.error("Error in check-answer:", error);
+        return next(new ErrorHandler(error.message, 500));
+    }
+};
 
 
 const deleteQuiz = async (req, res, next) => {
@@ -183,4 +232,4 @@ const deleteQuiz = async (req, res, next) => {
 
 
 
-module.exports = {createQuiz, getAllQuizes, updateQuiz, getQuestion, deleteQuiz}
+module.exports = {createQuiz, getAllQuizes, updateQuiz, getQuiz, checkAnswer, deleteQuiz}

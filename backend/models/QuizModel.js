@@ -18,6 +18,14 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    correctCount: {
+        type: Number,
+        default: 0,
+    },
+    incorrectCount: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const QuizSchema = new mongoose.Schema({
