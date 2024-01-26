@@ -1,133 +1,75 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "../styles/viewquizanalysis.module.css";
 import Leftsidebar from './Leftsidebar';
+import { Context } from '..';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { quizServer } from '../App';
 
-const Viewquizanalysis = () => {
-  return (
-    <div className={`container ${styles.parent}`}>
+const Viewquizanalysis = ({currentQuizID}) => {
 
-      <section className={styles.section_1}>
-        <h1>Quiz 2 Question Analysis</h1>
-        <div>
-            <p>Created on : 04 Sep, 2023</p>
-            <p>Impressions : 667</p>
+    const {loading, setLoading} = useContext(Context)
+    const [quiz, setQuiz] = useState(null)
+
+    const getQuiz = async () => {
+        setLoading(true)
+        try {
+          const {data} = await axios.get(`${quizServer}/getQuiz/${currentQuizID}`, { withCredentials: true });
+          setQuiz(data.quiz);
+          setLoading(false)
+        } catch (err) {
+          setLoading(false)
+          console.error(err.message);
+          console.log(err)
+          toast.error(`Error: ${err.message}`);
+        }
+      };
+
+    useEffect(() => {
+        getQuiz()
+    }, [])
+
+    if (!quiz) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className={`container ${styles.parent}`}>
+            <section className={styles.section_1}>
+                <h1>{quiz.quizName} Question Analysis</h1>
+                <div>
+                    <p>Created on : {new Date(quiz.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    <p>Impressions : {quiz.impressions}</p>
+                </div>
+            </section>
+            <br />
+            <br />
+            {quiz.questions.map((question, index) => (
+                <div key={index} className={styles.question_box}>
+                    <h2>Q.{index + 1} {question.question}</h2>
+                    <br />
+                    <section className={styles.question_div}>
+                        <div>
+                            <span>{question.correctCount + question.incorrectCount}</span>
+                            <p>people Attempted the question</p>
+                        </div>
+                        <div>
+                            <span>{question.correctCount}</span>
+                            <p>people Answered Correctly</p>
+                        </div>
+                        <div>
+                            <span>{question.incorrectCount}</span>
+                            <p>people Answered Incorrectly</p>
+                        </div>
+                    </section>
+                    <br />
+                    <br />
+                    <hr />
+                    <br />
+                </div>
+            ))}
         </div>
-      </section>
-        <br />
-        <br />
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>people Attempted the question</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>people Answered Correctly</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>people Answered Incorrectly</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>people Attempted the question</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>people Answered Correctly</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>people Answered Incorrectly</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>people Attempted the question</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>people Answered Correctly</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>people Answered Incorrectly</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>people Attempted the question</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>people Answered Correctly</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>people Answered Incorrectly</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>people Attempted the question</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>people Answered Correctly</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>people Answered Incorrectly</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-     
-    </div>
-  )
+    )
 }
 
-export default Viewquizanalysis
+export default Viewquizanalysis;

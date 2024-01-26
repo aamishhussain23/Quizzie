@@ -18,6 +18,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
   const [deleteQuizID, setDeleteQuizID] = useState("")
   const [viewquizanalysis, setViewquizanalysis] = useState(false)
   const [viewpollanalysis, setViewpollanalysis] = useState(false)
+  const [currentQuizID, setcurrentQuizID] = useState("")
 
   const getAllQuizes = async (userId) => {
     if (!userId) {
@@ -65,6 +66,17 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
       toast.error("No link is available. Please try again later.");
     }
   }
+
+  const handleQuizAnalysis = (type, id) => {
+    if(type === "Q&A"){
+      setcurrentQuizID(id)
+      setViewquizanalysis(true)
+    }
+    if(type === "Poll"){
+      setcurrentQuizID(id)
+      setViewpollanalysis(true)
+    }
+  }
   
 
   const handleDeletion = async () => {
@@ -91,7 +103,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
   return (
     <>
       {viewquizanalysis ? (
-        <Viewquizanalysis />
+        <Viewquizanalysis currentQuizID={currentQuizID} />
       ) : viewpollanalysis ? (
         <Viewpollanalysis />
       ) : (
@@ -134,7 +146,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
                           <img onClick={() => handleShareQuiz(quiz._id, quiz.quizType)} src={share} alt="description" />
                         </td>
                         <td>
-                          <Link onClick={() => setViewquizanalysis(true)} to="#">Question Wise Analysis</Link>
+                          <Link onClick={() => {handleQuizAnalysis(quiz.quizType, quiz._id)}}>Question Wise Analysis</Link>
                         </td>
                       </tr>
                     );
