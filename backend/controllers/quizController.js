@@ -152,6 +152,32 @@ const getQuiz = async (req, res, next) => {
 };
 
 
+const getQuizForUpdate = async (req, res, next) => {
+    const { quizId } = req.params;
+
+    try {
+        // Finding the quiz 
+        const quiz = await QuizCollection.findById(quizId);
+
+        if (!quiz) {
+            // Quiz not found
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            quiz
+        });
+    } catch (error) {
+        console.error("Error in getQuestionAtIndex:", error);
+        return next(new ErrorHandler(error.message, 500));
+    }
+};
+
+
 const checkAnswer = async (req, res, next) => {
     const { quizId } = req.body;
     const questions = req.body.questions;
@@ -237,4 +263,4 @@ const deleteQuiz = async (req, res, next) => {
 
 
 
-module.exports = {createQuiz, getAllQuizes, updateQuiz, getQuiz, checkAnswer, deleteQuiz}
+module.exports = {createQuiz, getAllQuizes, updateQuiz, getQuiz, getQuizForUpdate, checkAnswer, deleteQuiz}
