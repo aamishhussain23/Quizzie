@@ -168,6 +168,8 @@ const checkAnswer = async (req, res, next) => {
             });
         }
 
+        let totalScore = 0; // Initialize total score
+
         // Checking each question's answer
         for (const question of questions) {
             const { _id, userAnswer } = question;
@@ -181,11 +183,12 @@ const checkAnswer = async (req, res, next) => {
                 });
             }
 
-            // Checking if the user's answer is correct
+            // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
             if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
                 // Incrementing the correct count
                 dbQuestion.correctCount += 1;
+                totalScore += 1; // Increment total score of user
             } else {
                 // Incrementing the incorrect count
                 dbQuestion.incorrectCount += 1;
@@ -197,12 +200,14 @@ const checkAnswer = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Answers checked successfully",
+            totalScore
         });
     } catch (error) {
         console.error("Error in check-answer:", error);
         return next(new ErrorHandler(error.message, 500));
     }
 };
+
 
 
 const deleteQuiz = async (req, res, next) => {
