@@ -10,6 +10,7 @@ import { quizServer } from "../App";
 import toast from "react-hot-toast";
 import Viewquizanalysis from "./Viewquizanalysis";
 import Viewpollanalysis from "./Viewpollanalysis";
+import Updatequiz from "./Updatequiz";
 import Sharepopup from "./Sharepopup";
 
 const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGetLink}) => {
@@ -19,6 +20,8 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
   const [viewquizanalysis, setViewquizanalysis] = useState(false)
   const [viewpollanalysis, setViewpollanalysis] = useState(false)
   const [currentQuizID, setcurrentQuizID] = useState("")
+  const [updateQuiz, setUpdateQuiz] = useState(false)
+  const [quizTobeUpdate, setQuizTobeUpdate] = useState("")
 
   const getAllQuizes = async (userId) => {
     if (!userId) {
@@ -141,7 +144,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
                         <td>{formattedDate}</td>
                         <td>{quiz.impressions >= 1000 ? (quiz.impressions / 1000).toFixed(1) + "k" : quiz.impressions}</td>
                         <td className={styles.images}>
-                          <img src={edit} alt="description" />
+                          <img onClick={() => {setUpdateQuiz(true); setQuizTobeUpdate(quiz._id)}} src={edit} alt="description" />
                           <img onClick={() => setDeleteQuizID(quiz._id)} src={del} alt="description" />
                           <img onClick={() => handleShareQuiz(quiz._id, quiz.quizType)} src={share} alt="description" />
                         </td>
@@ -173,6 +176,18 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
         getLink ?  
         <div className={styles.dark_overlay}>
           <Sharepopup quizId={quizId} quizType={quizType} setAnalytics={setAnalytics} setGetLink={setGetLink}/>
+        </div>
+
+        :
+
+        null
+      }
+
+      {
+        updateQuiz ? 
+
+        <div className={styles.dark_overlay}>
+            <Updatequiz updateQuiz={updateQuiz} setUpdateQuiz={setUpdateQuiz} quizTobeUpdate={quizTobeUpdate}/>
         </div>
 
         :
