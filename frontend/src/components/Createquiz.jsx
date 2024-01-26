@@ -76,27 +76,33 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
   const handleQuizCreation = async () => {
     // Validation
     
+    let flag = true;
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].question.trim()) {
         toast.error(`Question ${i+1} is required`);
+        flag = false;
         return;
       }
       if (!questions[i].optionType.trim()) {
         toast.error(`Option type for question ${i+1} is required`);
+        flag = false;
         return;
       }
       if (questions[i].options.length < 2) {
         toast.error(`Question ${i+1} should have at least two options`);
+        flag = false;
         return;
       }
       for (let j = 0; j < questions[i].options.length; j++) {
         if (!questions[i].options[j].trim()) {
           toast.error(`Option ${j+1} for question ${i+1} is required`);
+          flag = false;
           return;
         }
       }
-      if (questions[i].correctAnswer === null) {
+      if (questions[i].correctAnswer === "" || questions[i].correctAnswer === null) {
         toast.error(`Correct answer for question ${i+1} is required`);
+        flag = false;
         return;
       }
     }
@@ -107,25 +113,34 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
       questions: questions,
       timer: timer
     }
-    setLoading(true);
-    try {
-      const {data} = await axios.post(`${quizServer}/create-quiz`, obj, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
-      
-      setQuizID(data.quizId);
-      setLoading(false);
-      toast.success(data.message); 
-      setCreateQuiz(false);
-      setAnalytics(true);
-      setGetLink(true);
-  } catch (error) {
-      console.error(error);
-      toast.error('An error occurred while creating the quiz');
-      setLoading(false);
-      setDashboard(true); 
-      setCreateQuiz(false);
+    console.log(obj)
+    if(flag === true){
+      setLoading(true);
+        try {
+          const {data} = await axios.post(`${quizServer}/create-quiz`, obj, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
+          
+          setQuizID(data.quizId);
+          setLoading(false);
+          toast.success(data.message); 
+          setCreateQuiz(false);
+          setAnalytics(true);
+          setGetLink(true);
+      } catch (error) {
+          console.error(error);
+          toast.error('An error occurred while creating the quiz');
+          setLoading(false);
+          setDashboard(true); 
+          setCreateQuiz(false);
+      }
+    }
   }
+  const obj = {
+    quizName: quizName,
+    quizType: quizType,
+    questions: questions,
+    timer: timer
   }
-  
+  console.log(obj)
   return (
     <div className={styles.popup_2} onClick={(e) => e.stopPropagation()}>
       <section className={styles.section_1}>

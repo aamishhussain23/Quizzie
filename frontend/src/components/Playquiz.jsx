@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import styles from "../styles/playquiz.module.css";
 import axios from 'axios';
 import { quizServer } from '../App';
 import toast from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Context } from '..';
 
 const Playquiz = () => {
   const [quiz, setQuiz] = useState(null);
@@ -11,18 +12,16 @@ const Playquiz = () => {
   const [userAnswers, setUserAnswers] = useState([]);
   const [timer, setTimer] = useState(null);
   const { id } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const {setUserScore} = useContext(Context)
+  const [loading, setLoading] = useState(false)
 
   const getQuiz = async () => {
     try {
       const {data} = await axios.get(`${quizServer}/getQuiz/${id}`, { withCredentials: true });
       setQuiz(data.quiz);
       setTimer(data.quiz.timer);
-      setUserAnswers(data.quiz.questions.map(question => ({
-        _id: question._id,
-        question: question.question,
-        userAnswer: ""
-      }))); 
+      setUserAnswers(data.quiz.questions.map(question => ({ _id: question._id, question: question.question, userAnswer: "" })));
     } catch (err) {
       console.error(err.message);
       console.log(err)
@@ -30,13 +29,13 @@ const Playquiz = () => {
     }
   };
 
-  useEffect(() => {  
+  useEffect(() => {
     getQuiz();
   }, [id]);
 
   useEffect(() => {
     if (timer === 0) {
-      if (currentQuestionIndex < quiz.questions.length - 1) {
+      if (quiz.timer !== 0 && currentQuestionIndex < quiz.questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setTimer(quiz.timer);
       }
@@ -47,10 +46,7 @@ const Playquiz = () => {
   }, [timer]);
 
   useEffect(() => {
-    console.log({
-      quizId: id,
-      questions: userAnswers
-    });
+    console.log({ quizId: id, questions: userAnswers });
   }, [timer]);
 
   if (!quiz) {
@@ -66,40 +62,53 @@ const Playquiz = () => {
   };
 
   const handleNextClick = () => {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (currentQuestionIndex < quiz.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setTimer(quiz.timer);
+    }
   };
 
-  const handleSubmit = () => {
-    console.log({
-      quizId: id,
-      questions: userAnswers
-    });
-    navigate('/home');
+  const handleSubmit = async () => { 
+    setLoading(true)
+    try {
+      const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: userAnswers }, { withCredentials: true });
+      setUserScore(`${data.totalScore}/${currentQuestionIndex+1}`); 
+      setLoading(false);
+      navigate('/result');
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      toast.error("something went wrong")
+    }
   };
 
   return (
     <div className={styles.parent}>
       <div className={styles.childBox}>
         <section className={styles.section_1}>
-            <span>{currentQuestionIndex + 1}/{quiz.questions.length}</span>
-            <span className={styles.timer}>00:{timer}s</span>
+          <span>{currentQuestionIndex + 1}/{quiz.questions.length}</span>
+          <span className={styles.timer}>00:{timer}s</span>
         </section>
         <h1>{question.question}</h1>
         <section className={styles.section_2}>
-            {question.options.map((option, index) => (
-              <div 
-                key={index} 
-                className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} 
-                onClick={() => handleOptionClick(option)}
-              >
-                {option}
+          {question.options.map((option, index) => {
+            let optionText, optionUrl;
+            if (question.optionType === 'textandurl') {
+              [optionText, optionUrl] = option.split('|');
+            }
+            return (
+              <div key={index} className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} onClick={() => handleOptionClick(option)} >
+                {question.optionType === 'text' ? option : 
+                 question.optionType === 'url' ? <img src={option} alt="Option" /> :
+                 question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl} alt="Option" /><p>{optionText}</p></div> : null}
               </div>
-            ))}
+            );
+          })}
         </section>
         {currentQuestionIndex < quiz.questions.length - 1 ? (
           <button onClick={handleNextClick}>Next</button>
         ) : (
-          <button onClick={handleSubmit}>SUBMIT</button>
+          <button onClick={handleSubmit}>{loading ? "wait..." : "SUBMIT"}</button>
         )}
       </div>
     </div>
