@@ -209,8 +209,11 @@ const checkAnswer = async (req, res, next) => {
                 });
             }
 
-            // Incrementing the total participants count for the question
-            dbQuestion.totalParticipants += 1;
+            // Find the selected option and incrementing its totalParticipants count
+            const selectedOption = dbQuestion.options.find(option => option.option === userAnswer);
+            if (selectedOption) {
+                selectedOption.totalParticipants += 1;
+            }
 
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
@@ -236,7 +239,6 @@ const checkAnswer = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 };
-
 
 
 
