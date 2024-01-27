@@ -209,9 +209,14 @@ const checkAnswer = async (req, res, next) => {
                 });
             }
 
+            // Incrementing the total participants count for the selected option
+            if (userAnswer) {
+                dbQuestion.totalParticipants.set(userAnswer, (dbQuestion.totalParticipants.get(userAnswer) || 0) + 1);
+            }
+
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
-            if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
+            if (userAnswer && correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
                 // Incrementing the correct count
                 dbQuestion.correctCount += 1;
                 totalScore += 1; // Increment total score of user

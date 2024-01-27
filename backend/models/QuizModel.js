@@ -14,6 +14,11 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true,
     }],
+    totalParticipants: {
+        type: Map,
+        of: Number,
+        default: {}
+    },
     correctAnswer: {
         type: String,
         required: true,
