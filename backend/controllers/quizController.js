@@ -27,6 +27,7 @@ const createQuiz = async (req, res, next) => {
             questions: questions.map((question) => ({
                 ...question,
                 question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each question
+                totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
             })),
             timer,
             user: req.user._id,
