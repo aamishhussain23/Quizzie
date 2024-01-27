@@ -209,12 +209,6 @@ const checkAnswer = async (req, res, next) => {
                 });
             }
 
-            // Find the selected option and incrementing its totalParticipants count
-            const selectedOption = dbQuestion.options.find(option => option.option === userAnswer);
-            if (selectedOption) {
-                selectedOption.totalParticipants += 1;
-            }
-
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
             if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
@@ -231,7 +225,7 @@ const checkAnswer = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Saved Successfully",
+            message: "Answers checked successfully",
             totalScore
         });
     } catch (error) {

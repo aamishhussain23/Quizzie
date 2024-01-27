@@ -1,16 +1,5 @@
 const mongoose = require("mongoose");
 
-const OptionSchema = new mongoose.Schema({
-    option: {
-        type: String,
-        required: true,
-    },
-    totalParticipants: {
-        type: Number,
-        default: 0,
-    },
-});
-
 const QuestionSchema = new mongoose.Schema({
     question: {
         type: String,
@@ -21,7 +10,10 @@ const QuestionSchema = new mongoose.Schema({
         enum: ['text', 'url', 'textandurl'],
         required: true,
     },
-    options: [OptionSchema],
+    options: [{
+        type: String,
+        required: true,
+    }],
     correctAnswer: {
         type: String,
         required: true,
