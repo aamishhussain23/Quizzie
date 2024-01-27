@@ -235,7 +235,6 @@ const checkAnswer = async (req, res, next) => {
 };
 
 
-
 const deleteQuiz = async (req, res, next) => {
     const userId = req.user._id;
     const quizId = req.params.id;
