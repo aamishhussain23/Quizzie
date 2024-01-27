@@ -72,7 +72,7 @@ const Home = () => {
           className={styles.dark_overlay}
         >
           {hidePopup1 ? (
-            <Createquiz quizId={quizId} setQuizID={setQuizID} setAnalytics={setAnalytics} getLink={getLink} setGetLink={setGetLink} setDashboard={setDashboard} setCreateQuiz={setCreateQuiz} quizName={quizname} quizType={quizType} />
+            <Createquiz quizId={quizId} setQuizType={setQuizType} setQuizID={setQuizID} setAnalytics={setAnalytics} getLink={getLink} setGetLink={setGetLink} setDashboard={setDashboard} setCreateQuiz={setCreateQuiz} quizName={quizname} quizType={quizType} />
           ) : (
             <Popup1
               quizName={quizname}

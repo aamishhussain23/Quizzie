@@ -1,154 +1,71 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "../styles/viewpollanalysis.module.css";
-import Leftsidebar from './Leftsidebar';
+import { Context } from '..';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { quizServer } from '../App';
 
-const Viewpollanalysis = () => {
-  return (
-    <div className={`container ${styles.parent}`}>
+const Viewpollanalysis = ({currentQuizID}) => {
+    const {loading, setLoading} = useContext(Context)
+    const [quiz, setQuiz] = useState(null)
 
-      <section className={styles.section_1}>
-        <h1>Poll 2 Question Analysis</h1>
-        <div>
-            <p>Created on : 04 Sep, 2023</p>
-            <p>Impressions : 667</p>
+    const getQuiz = async () => {
+        setLoading(true)
+        try {
+            const {data} = await axios.get(`${quizServer}/getQuizForUpdate/${currentQuizID}`, { withCredentials: true });
+            console.log(data)
+            setQuiz(data.quiz);
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            console.error(err.message);
+            console.log(err)
+            toast.error(`Error: ${err.message}`);
+        }
+    };
+
+    useEffect(() => {
+        getQuiz()
+    }, [])
+
+    if (!quiz) {
+        return <div>Loading...</div>;
+    }
+
+    // console.log(quiz)
+
+    return (
+        <div className={`container ${styles.parent}`}>
+            <section className={styles.section_1}>
+                <h1>{quiz.quizName} Question Analysis</h1>
+                <div>
+                    <p>Created on : {new Date(quiz.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    <p>Impressions : {quiz.impressions}</p>
+                </div>
+            </section>
+            <br />
+            <br />
+            {quiz.questions.map((question, index) => (
+                <div key={index} className={styles.question_box}>
+                    <h2>Q.{index + 1} {question.question}</h2>
+                    <br />
+                    <section className={styles.question_div}>
+                        {question.options.map((option, optionIndex) => (
+                            <div key={optionIndex}>
+                                {/* <span>{console.log(question)}</span> */}
+                                <span>{question.totalParticipants[option] || 0}</span>
+                                <p>{option}</p>
+                            </div>
+                        ))}
+                    </section>
+                    <br />
+                    <br />
+                    <hr />
+                    <br />
+                </div>
+            ))}
         </div>
-      </section>
-        <br />
-        <br />
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>Option 1</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>Option 2</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>Option 3</p>
-            </div>
-            <div>
-                <span>42</span>
-                <p>Option 4</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>Option 1</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>Option 2</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>Option 3</p>
-            </div>
-            <div>
-                <span>42</span>
-                <p>Option 4</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>Option 1</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>Option 2</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>Option 3</p>
-            </div>
-            <div>
-                <span>42</span>
-                <p>Option 4</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>Option 1</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>Option 2</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>Option 3</p>
-            </div>
-            <div>
-                <span>42</span>
-                <p>Option 4</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      <div className={styles.question_box}>
-        <h2>Q.1 Question place holder for analysis ? </h2>
-        <br />
-        <section className={styles.question_div}>
-            <div>
-                <span>60</span>
-                <p>Option 1</p>
-            </div>
-            <div>
-            <span>38</span>
-                <p>Option 2</p>
-            </div>
-            <div>
-                <span>22</span>
-                <p>Option 3</p>
-            </div>
-            <div>
-                <span>42</span>
-                <p>Option 4</p>
-            </div>
-        </section>
-        <br />
-        <br />
-        <hr />
-        <br />
-      </div>
-      
-     
-    </div>
-  )
+    )
 }
 
-export default Viewpollanalysis
+export default Viewpollanalysis;

@@ -278,7 +278,12 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
           />
         )}
       </section>
-      <div className={styles.timer}>
+
+      {
+        
+        quiz && quiz.quizType === "Q&A" ?
+
+        <div className={styles.timer}>
         <span className={styles.text}>Timer</span>
         <span
           style={{
@@ -308,6 +313,12 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
           10 sec
         </span>
       </div>
+
+      :
+
+      null
+      }
+      
       <section className={styles.section_4}>
         <div className={styles.cancelContinue}>
           <button

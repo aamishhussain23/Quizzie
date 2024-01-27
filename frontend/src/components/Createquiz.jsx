@@ -10,7 +10,7 @@ import axios from 'axios'
 import { quizServer } from '../App'
 import { Context } from "..";
 
-const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDashboard, setCreateQuiz, quizName, quizType}) => {
+const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDashboard, setCreateQuiz, quizName, quizType, setQuizType}) => {
   const [questions, setQuestions] = useState([{
     question: "",
     optionType: "",
@@ -141,6 +141,7 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
     timer: timer
   }
   console.log(obj)
+  console.log(quizType)
   return (
     <div className={styles.popup_2} onClick={(e) => e.stopPropagation()}>
       <section className={styles.section_1}>
@@ -226,15 +227,24 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
         {currentOptionType === "url" && <TypeURL questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
         {currentOptionType === "textandurl" && <TypetextandURL questions={questions} setQuestions={setQuestions} currentIndex={currentIndex} />}
       </section>
-      <div className={styles.timer}>
-        <span className={styles.text}>Timer</span>
-        <span>OFF</span>
-        <span>5 sec</span>
-        <span>10 sec</span>
-      </div>
+      {
+        
+        quizType === "Q&A" ?
+
+        <div className={styles.timer}>
+          <span className={styles.text}>Timer</span>
+          <span>OFF</span>
+          <span>5 sec</span>
+          <span>10 sec</span>
+        </div>
+
+      :
+
+      null
+      }
       <section className={styles.section_4}>
         <div className={styles.cancelContinue}>
-          <button className={styles.cancelbtn} onClick={() => {setDashboard(true); setCreateQuiz(false);}}>Cancel</button>
+          <button className={styles.cancelbtn} onClick={() => {setDashboard(true); setCreateQuiz(false); setQuizType("Q&A")}}>Cancel</button>
           <button disabled={loading} className={styles.continuebtn} onClick={handleQuizCreation}>{loading ? 'Wait...' : "Create Quiz"}</button>
         </div>
       </section>

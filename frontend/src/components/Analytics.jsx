@@ -108,7 +108,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
       {viewquizanalysis ? (
         <Viewquizanalysis currentQuizID={currentQuizID} />
       ) : viewpollanalysis ? (
-        <Viewpollanalysis />
+        <Viewpollanalysis currentQuizID={currentQuizID} />
       ) : (
         <div className={styles.analytics}>
           <h2>Quiz Analytics</h2>
