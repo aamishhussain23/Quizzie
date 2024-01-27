@@ -209,6 +209,9 @@ const checkAnswer = async (req, res, next) => {
                 });
             }
 
+            // Incrementing the total participants count for the question
+            dbQuestion.totalParticipants += 1;
+
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
             if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
@@ -225,7 +228,7 @@ const checkAnswer = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Answers checked successfully",
+            message: "Saved Successfully",
             totalScore
         });
     } catch (error) {
@@ -233,6 +236,7 @@ const checkAnswer = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 };
+
 
 
 

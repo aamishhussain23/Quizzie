@@ -18,6 +18,10 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    totalParticipants : {
+        type : Number,
+        default : 0
+    },
     correctCount: {
         type: Number,
         default: 0,
