@@ -52,7 +52,7 @@ const getAllQuizes = async (req, res, next) => {
         // Retrieve quizzes for the specified user
         const userQuizzes = await QuizCollection.find({ user: userId });
 
-        // Create a copy of each quiz and remove the correctAnswer field from each question
+        // Creating a copy of each quiz and removing the correctAnswer field from each question
         let userQuizzesCopy = userQuizzes.map(quiz => {
             let quizCopy = quiz.toObject();
             quizCopy.questions.forEach(question => {
@@ -61,10 +61,17 @@ const getAllQuizes = async (req, res, next) => {
             return quizCopy;
         });
 
+        // Sorting quizzes by impressions
+        let quizzesByImpressions = [...userQuizzesCopy].sort((a, b) => b.impressions - a.impressions);
+
+        // Sorting quizzes by creation date
+        let quizzesByDate = [...userQuizzesCopy].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
         res.status(200).json({
             success: true,
-            totalQuiz : userQuizzesCopy.length,
-            quizzes: userQuizzesCopy
+            totalQuiz: userQuizzesCopy.length,
+            quizzesByImpressions: quizzesByImpressions,
+            quizzesByDate: quizzesByDate
         });
 
     } catch (error) {
@@ -72,6 +79,7 @@ const getAllQuizes = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 };
+
 
 
 
