@@ -38,25 +38,87 @@ const LoginSignUp = () => {
     }
 
     const handleRegister = async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        try {
-            const {data} = await axios.post(`${userServer}/register`, {name, email, password : confirmPassword}, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
+        e.preventDefault();
+        setLoading(true);
 
-            toast.success(data.message)
-            console.log(data)
-            setIsAuthenticated(true)
-            setLoading(false)
-        } catch (error) {
-            toast.error(error.response.data.message)
-            setIsAuthenticated(false)
-            setLoading(false)
+        if (!name) {
+            toast.error("Name field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (name.length < 3) {
+            toast.error("Please enter a valid name. It should be at least 3 characters long.");
+            setLoading(false);
+            return;
         }
-    }
+        
+        if (!email) {
+            toast.error("Email field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (!email.includes('@')) {
+            toast.error("Please enter a valid email address.");
+            setLoading(false);
+            return;
+        }
+        
+        if (!password) {
+            toast.error("Password field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (password.length < 8) {
+            toast.error("Your password is too weak. It should be at least 8 characters long.");
+            setLoading(false);
+            return;
+        }
+        
+        if (!confirmPassword) {
+            toast.error("Confirm password field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (password !== confirmPassword) {
+            toast.error("Password and confirm password do not match.");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const {data} = await axios.post(`${userServer}/register`, {name, email, password, confirmPassword}, {withCredentials : true, headers : {"Content-Type" : "application/json"}});
+            toast.success(data.message);
+            console.log(data);
+            setIsAuthenticated(true);
+            setLoading(false);
+        } catch (error) {
+            toast.error(error.response.data.message);
+            setIsAuthenticated(false);
+            setLoading(false);
+        }
+    };
+
 
     const handleLogin = async (e) => {
         e.preventDefault()
         setLoading(true)
+
+        if (!email) {
+            toast.error("Email field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (!email.includes('@')) {
+            toast.error("Please enter a valid email address.");
+            setLoading(false);
+            return;
+        }
+        
+        if (!confirmPassword) {
+            toast.error("Password field cannot be empty.");
+            setLoading(false);
+            return;
+        } else if (confirmPassword.length < 8) {
+            toast.error("Your password is too weak. It should be at least 8 characters long.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const {data} = await axios.post(`${userServer}/login`, {email, password : confirmPassword}, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
             toast.success(data.message)
@@ -115,7 +177,7 @@ const LoginSignUp = () => {
         
                         <div className={styles.form_group}>
                             <label htmlFor="pass">Password</label>
-                            <input onChange={(e) => setConfirmPassword(e.target.value)} type="text" id="pass" />
+                            <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="pass" />
                         </div>
         
                         <div className={styles.flex}>
