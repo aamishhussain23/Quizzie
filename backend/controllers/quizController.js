@@ -99,6 +99,7 @@ const updateQuiz = async (req, res, next) => {
         quizToUpdate.questions = questions.map(question => ({
             ...question,
             question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
+            totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
         }));
 
         // Saving the updated quiz
