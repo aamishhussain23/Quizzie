@@ -14,18 +14,16 @@ const Dashboard = ({ id }) => {
   }, [id]);
 
   const getAllQuizes = async () => {
-      if (!id) {
-        return;
+    if (!id) {
+      return;
     }
     setLoading(true);
     try {
-      const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, { withCredentials: true });
-
+      const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, {
+        withCredentials: true,
+      });
       const quizzesData = data.quizzes || [];
-
-      const sortedQuizzes = quizzesData.sort((a, b) => b.impressions - a.impressions);
-
-      setQuizes(sortedQuizzes);
+      setQuizes(quizzesData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching quizzes:", error);

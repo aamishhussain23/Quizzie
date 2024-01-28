@@ -27,14 +27,14 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
     if (!userId) {
       return;
     }
-
-    setLoading(true)
+    setLoading(true);
     try {
-      const { data } = await axios.get(`${quizServer}/getAllQuizes/${userId}`, { withCredentials: true });
-      setLoading(false)
-      setIsAuthenticated(true)
-      const sortedQuizzes = data.quizzes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-      setQuizes(sortedQuizzes);
+      const { data } = await axios.get(`${quizServer}/getAllQuizes/${userId}`, {
+        withCredentials: true,
+      });
+      setLoading(false);
+      setIsAuthenticated(true);
+      setQuizes(data.quizzes);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     }
