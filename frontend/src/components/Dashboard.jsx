@@ -22,14 +22,14 @@ const Dashboard = ({ id }) => {
       const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, {
         withCredentials: true,
       });
-      const quizzesData = data.quizzes || [];
-      setQuizes(quizzesData);
       setLoading(false);
+      const quizzesByImpressions = data.quizzesByImpressions || [];
+      setQuizes(quizzesByImpressions);
     } catch (error) {
-      console.error("Error fetching quizzes:", error);
-      setLoading(false);
+      console.error('Error fetching quizzes:', error);
     }
   };
+  
 
   const totalQuestions = quizes.reduce((total, quiz) => total + quiz.questions.length, 0);
 

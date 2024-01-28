@@ -34,11 +34,13 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
       });
       setLoading(false);
       setIsAuthenticated(true);
-      setQuizes(data.quizzes);
+      const quizzesByDate = data.quizzesByDate || [];
+      setQuizes(quizzesByDate);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     }
   };
+  
 
   const handleShareQuiz = (id, type) => {
     let link;
