@@ -14,7 +14,7 @@ const Viewquizanalysis = ({currentQuizID}) => {
     const getQuiz = async () => {
         setLoading(true)
         try {
-          const {data} = await axios.get(`${quizServer}/getQuiz/${currentQuizID}`, { withCredentials: true });
+          const {data} = await axios.get(`${quizServer}/getQuizForUpdate/${currentQuizID}`, { withCredentials: true });
           setQuiz(data.quiz);
           setLoading(false)
         } catch (err) {

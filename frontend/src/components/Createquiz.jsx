@@ -233,10 +233,34 @@ const Createquiz = ({quizId, setQuizID, getLink, setGetLink, setAnalytics, setDa
 
         <div className={styles.timer}>
           <span className={styles.text}>Timer</span>
-          <span>OFF</span>
-          <span>5 sec</span>
-          <span>10 sec</span>
-        </div>
+          <span
+            style={{
+              backgroundColor: timer === 0 ? "#D60000" : "white",
+              color: timer === 0 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(0)}
+          >
+            OFF
+          </span>
+          <span
+            style={{
+              backgroundColor: timer === 5 ? "#D60000" : "white",
+              color: timer === 5 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(5)}
+          >
+            5 sec
+          </span>
+          <span
+            style={{
+              backgroundColor: timer === 10 ? "#D60000" : "white",
+              color: timer === 10 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(10)}
+          >
+            10 sec
+          </span>
+      </div>
 
       :
 

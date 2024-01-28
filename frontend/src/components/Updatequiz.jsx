@@ -99,6 +99,8 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
     setCurrentOptions(questions[currentIndex]?.options || [""]);
   }, [currentIndex, questions]);
 
+  console.log(questions)
+
   const handleQuizUpdation = async () => {
     // Validation
 
@@ -142,6 +144,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
       questions: questions,
       timer: timer,
     };
+    console.log(obj)
     if (flag === true) {
       setLoading(true);
       try {
