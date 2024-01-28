@@ -13,15 +13,16 @@ const Typetext = ({questions, setQuestions, currentIndex}) => {
   };
 
   const removeOption = (index) => {
-    const newOptions = options.filter((_, i) => i !== index); 
+    const newOptions = [...options];
+    newOptions.splice(index, 1);
     setOptions(newOptions);
-
     if (questions[currentIndex]) {
-      const newQuestions = [...questions];
-      newQuestions[currentIndex].options = newOptions;
-      setQuestions(newQuestions);
+        const newQuestions = [...questions];
+        newQuestions[currentIndex].options = newOptions;
+        setQuestions(newQuestions);
     }
-  };
+};
+
 
   const handleInputChange = (event, index) => {
     const newOptions = [...options];
