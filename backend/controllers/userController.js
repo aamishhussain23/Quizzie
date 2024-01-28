@@ -9,8 +9,14 @@ const register = async (req, res, next) => {
 
     try {
 
-        // checking whether user provided all the fields or not
+        // checking validations
         if(!name || !email || !password || !confirmPassword) return next(new ErrorHandler("All Fields are required", 400))
+
+        if (name.length < 3) return next(new ErrorHandler("Please enter a valid name. It should be at least 3 characters long.", 400))
+
+        if (!email.includes('@')) return next(new ErrorHandler("Please enter a valid email address.", 400))
+
+        if (password.length < 8) return next(new ErrorHandler("Your password is too weak. It should be at least 8 characters long.", 400))
 
         if (password !== confirmPassword) return next(new ErrorHandler("Password and confirm password do not match.", 400))
 
@@ -24,7 +30,7 @@ const register = async (req, res, next) => {
 
         // hashing password first
         const hashed_password = await bcrypt.hash(password, 10)
-        const new_user = await UserCollection.create({name, email, password : hashed_password})
+        const new_user = await UserCollection.create({name, email, password : hashed_password, confirmPassword : hashed_password})
 
         // getting first word of name
         const words = name.split(' ');
@@ -46,6 +52,10 @@ const login = async (req, res, next) => {
 
         // here checking whether user provided all the fields or not
         if(!email || !password) return next(new ErrorHandler("All Fields are required", 400))
+
+        if (!email.includes('@')) return next(new ErrorHandler("Please enter a valid email address.", 400))
+
+        if (password.length < 8) return next(new ErrorHandler("Your password is too weak. It should be at least 8 characters long.", 400))
 
         // get the user of particular email
         const user = await UserCollection.findOne({email}).select('+password')
