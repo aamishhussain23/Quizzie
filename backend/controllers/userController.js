@@ -5,12 +5,14 @@ const bcrypt = require('bcrypt')
 
 const register = async (req, res, next) => {
 
-    const {name, email, password} = req.body
+    const {name, email, password, confirmPassword} = req.body
 
     try {
 
         // checking whether user provided all the fields or not
-        if(!name || !email || !password) return next(new ErrorHandler("All Fields are required", 400))
+        if(!name || !email || !password || !confirmPassword) return next(new ErrorHandler("All Fields are required", 400))
+
+        if (password !== confirmPassword) return next(new ErrorHandler("Password and confirm password do not match.", 400))
 
         const user = await UserCollection.findOne({email})
 
