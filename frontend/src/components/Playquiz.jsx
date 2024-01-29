@@ -72,19 +72,25 @@ const Playquiz = () => {
     }
   };
 
-  const handleSubmit = async () => { 
+  const handleSubmit = async () => {
     setLoading(true)
     try {
-      const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: userAnswers }, { withCredentials: true });
-      setUserScore(`${data.totalScore}/${currentQuestionIndex+1}`); 
-      setLoading(false);
-      navigate('/result');
+        const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: userAnswers }, { withCredentials: true });
+        if (quiz.quizType === 'Poll') {
+            toast.success("Thanks for participating in the poll!");
+            navigate('/Poll');
+        } else {
+            setUserScore(`${data.totalScore}/${currentQuestionIndex+1}`);
+            toast.success("Quiz submitted successfully!");
+            navigate('/result');
+        }
+        setLoading(false);
     } catch (error) {
-      setLoading(false);
-      console.error(error);
-      toast.error("something went wrong")
+        setLoading(false);
+        console.error(error);
+        toast.error("Something went wrong");
     }
-  };
+};
 
   return (
     <div className={styles.parent}>

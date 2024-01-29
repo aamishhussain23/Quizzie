@@ -5,6 +5,7 @@ import LoginSignUp from './components/LoginSignUp';
 import Home from './components/Home';
 import Result from './components/Result';
 import Playquiz from './components/Playquiz';
+import Pollresult from './components/Pollresult';
 
 export const userServer = "https://aamish-hussain-quizzie.onrender.com/api/v1/user"
 export const quizServer = "https://aamish-hussain-quizzie.onrender.com/api/v1/quiz"
@@ -16,6 +17,7 @@ function App() {
           <Route path='/' element={<LoginSignUp/>}></Route>
           <Route path='/home' element={<Home/>}></Route>
           <Route path='/result' element={<Result/>}></Route>
+          <Route path='/poll' element={<Pollresult/>}></Route>
           <Route path='/playQuiz/:id' element={<Playquiz/>}></Route>
           <Route path='/Poll/:id' element={<Playquiz/>}></Route>
         </Routes>
