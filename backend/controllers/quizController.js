@@ -28,6 +28,7 @@ const createQuiz = async (req, res, next) => {
                 ...question,
                 question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each question
                 totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
+                originalOptions: question.options, // Store the original URLs
             })),
             timer,
             user: req.user._id,
@@ -107,6 +108,7 @@ const updateQuiz = async (req, res, next) => {
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
         totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
+        originalOptions: question.options, // Store the original URLs
         correctCount: 0, // Reset correct count
         incorrectCount: 0, // Reset incorrect count
       }));
@@ -122,10 +124,7 @@ const updateQuiz = async (req, res, next) => {
       console.error("Error in updateQuiz:", error);
       return next(new ErrorHandler(error.message, 500));
     }
-  };
-  
-  
-  
+};
 
 
 const getQuiz = async (req, res, next) => {
