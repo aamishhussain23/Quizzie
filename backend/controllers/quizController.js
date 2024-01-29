@@ -46,7 +46,6 @@ const createQuiz = async (req, res, next) => {
 };
 
 
-
 const getAllQuizes = async (req, res, next) => {
     const userId = req.params.id;
 
@@ -228,7 +227,7 @@ const checkAnswer = async (req, res, next) => {
 
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
-            if (userAnswer && correctAnswer.toLowerCase() === userAnswer.replace(/_/g, '.').toLowerCase()) {
+            if (userAnswer && correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
                 // Incrementing the correct count
                 dbQuestion.correctCount += 1;
                 totalScore += 1; // Increment total score of user
