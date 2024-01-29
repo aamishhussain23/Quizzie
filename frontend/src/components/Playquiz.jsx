@@ -35,9 +35,13 @@ const Playquiz = () => {
 
   useEffect(() => {
     if (timer === 0) {
-      if (quiz.timer !== 0 && currentQuestionIndex < quiz.questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setTimer(quiz.timer);
+      if (quiz.timer !== 0) {
+        if (currentQuestionIndex < quiz.questions.length - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setTimer(quiz.timer);
+        } else {
+          handleSubmit();
+        }
       }
     } else {
       const timeout = setTimeout(() => setTimer(timer - 1), 1000);
@@ -87,7 +91,7 @@ const Playquiz = () => {
       <div className={styles.childBox}>
         <section className={styles.section_1}>
           <span>{currentQuestionIndex + 1}/{quiz.questions.length}</span>
-          <span className={styles.timer}>00:{timer}s</span>
+          {quiz.quizType !== 'Poll' && <span className={styles.timer}>00:{timer}s</span>}
         </section>
         <h1>{question.question}</h1>
         <section className={styles.section_2}>
