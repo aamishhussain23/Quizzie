@@ -27,7 +27,7 @@ const createQuiz = async (req, res, next) => {
             questions: questions.map((question) => ({
                 ...question,
                 question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each question
-                totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [encodeURIComponent(option)]: 0}), {}))),
+                totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
             })),
             timer,
             user: req.user._id,
@@ -106,7 +106,7 @@ const updateQuiz = async (req, res, next) => {
       quizToUpdate.questions = questions.map(question => ({
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
-        totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [encodeURIComponent(option)]: 0}), {}))),
+        totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
         correctCount: 0, // Reset correct count
         incorrectCount: 0, // Reset incorrect count
       }));
@@ -123,6 +123,7 @@ const updateQuiz = async (req, res, next) => {
       return next(new ErrorHandler(error.message, 500));
     }
   };
+  
   
   
 
