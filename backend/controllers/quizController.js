@@ -27,7 +27,7 @@ const createQuiz = async (req, res, next) => {
             questions: questions.map((question) => ({
                 ...question,
                 question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each question
-                totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
+                totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [encodeURIComponent(option)]: 0}), {}))),
             })),
             timer,
             user: req.user._id,
@@ -43,6 +43,7 @@ const createQuiz = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 };
+
 
 
 const getAllQuizes = async (req, res, next) => {
@@ -105,9 +106,9 @@ const updateQuiz = async (req, res, next) => {
       quizToUpdate.questions = questions.map(question => ({
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
-        totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}))),
-        correctCount: 0, 
-        incorrectCount: 0, 
+        totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [encodeURIComponent(option)]: 0}), {}))),
+        correctCount: 0, // Reset correct count
+        incorrectCount: 0, // Reset incorrect count
       }));
   
       // Saving the updated quiz
@@ -121,7 +122,8 @@ const updateQuiz = async (req, res, next) => {
       console.error("Error in updateQuiz:", error);
       return next(new ErrorHandler(error.message, 500));
     }
-};
+  };
+  
   
 
 
