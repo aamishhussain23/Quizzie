@@ -26,7 +26,8 @@
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
+    overflow-x: auto;
 }
 
 .box{
@@ -146,7 +147,3 @@
     color: var(--orange-color);
     font-weight: 600;
 }
-
-/* *{
-    border: 1px solid red;
-} */
