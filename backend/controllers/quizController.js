@@ -81,48 +81,47 @@ const getAllQuizes = async (req, res, next) => {
 };
 
 
-
-
 const updateQuiz = async (req, res, next) => {
     const { quizId } = req.params;
     const { quizName, questions, timer } = req.body;
-
+  
     try {
-        // Finding the quiz 
-        const quizToUpdate = await QuizCollection.findById(quizId);
-
-        if (!quizToUpdate) {
-            // Quiz not found
-            return res.status(404).json({
-                success: false,
-                message: "Quiz not found",
-            });
-        }
-
-        // Updating the quiz name and timer
-        quizToUpdate.quizName = quizName;
-        quizToUpdate.timer = timer;
-
-        // Updating all questions
-        quizToUpdate.questions = questions.map(question => ({
-            ...question,
-            question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
-            totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
-        }));
-
-        // Saving the updated quiz
-        const updatedQuiz = await quizToUpdate.save();
-
-        res.status(200).json({
-            success: true,
-            message: `Quiz updated successfully`,
+      // Finding the quiz
+      const quizToUpdate = await QuizCollection.findById(quizId);
+  
+      if (!quizToUpdate) {
+        // Quiz not found
+        return res.status(404).json({
+          success: false,
+          message: "Quiz not found",
         });
+      }
+  
+      // Updating the quiz name and timer
+      quizToUpdate.quizName = quizName;
+      quizToUpdate.timer = timer;
+  
+      // Updating all questions
+      quizToUpdate.questions = questions.map(question => ({
+        ...question,
+        question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
+        totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
+        correctCount: 0, 
+        incorrectCount: 0, 
+      }));
+  
+      // Saving the updated quiz
+      const updatedQuiz = await quizToUpdate.save();
+  
+      res.status(200).json({
+        success: true,
+        message: `Quiz updated successfully`,
+      });
     } catch (error) {
-        console.error("Error in updateQuiz:", error);
-        return next(new ErrorHandler(error.message, 500));
+      console.error("Error in updateQuiz:", error);
+      return next(new ErrorHandler(error.message, 500));
     }
-};
-
+  };
 
 
 const getQuiz = async (req, res, next) => {
