@@ -105,7 +105,7 @@ const updateQuiz = async (req, res, next) => {
       quizToUpdate.questions = questions.map(question => ({
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
-        totalParticipants: question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}),
+        totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option]: 0}), {}))),
         correctCount: 0, 
         incorrectCount: 0, 
       }));
@@ -121,7 +121,8 @@ const updateQuiz = async (req, res, next) => {
       console.error("Error in updateQuiz:", error);
       return next(new ErrorHandler(error.message, 500));
     }
-  };
+};
+  
 
 
 const getQuiz = async (req, res, next) => {
