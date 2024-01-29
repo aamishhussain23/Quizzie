@@ -21,11 +21,12 @@
 
 .question_div{
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 90%;
 }
 
 .question_div > div{
+    margin-right: 10px;
     height: 5rem;
     width: 14rem;
     background-color: white;
@@ -34,15 +35,15 @@
     align-items: center;
     justify-content: center;
     border-radius: 0.5rem;
+}
 
+.question_div > div > p{
+    width: 35%;
+    overflow-y: auto;
 }
 
 .question_div span{
     font-size: 2rem;
     color: var(--heading-color);
 
-}
-
-*{
-    /* border: 1px solid red; */
 }

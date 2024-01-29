@@ -164,7 +164,7 @@ const LoginSignUp = () => {
                             <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="cnfPss" />
                         </div>
                         <div className={styles.btn_div}>
-                            <button>Sign-Up</button>
+                            <button>{loading ? "Wait..." : "Sign-Up"}</button>
                         </div>
                     </form>
                     :
@@ -181,7 +181,7 @@ const LoginSignUp = () => {
                         </div>
         
                         <div className={styles.flex}>
-                            <button className={` ${styles.login_btn}`}>Log In</button>
+                            <button className={` ${styles.login_btn}`}>{loading ? "Please wait..." : "Log In"}</button>
                         </div>
                     </form>    
                 }

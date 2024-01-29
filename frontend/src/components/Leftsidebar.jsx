@@ -38,6 +38,7 @@ const Leftsidebar = ({
   const {loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
 
   const logoutApi = async () => {
+    setLoading(true)
     try {
       const {data} = await axios.get(`${userServer}/logout`, {withCredentials : true})
       setLoading(false)
@@ -45,6 +46,7 @@ const Leftsidebar = ({
       setIsAuthenticated(false)
     } catch (error) {
       setIsAuthenticated(true)
+      setLoading(false)
       toast.error(error.response.data.message)
     }
   } 
@@ -76,7 +78,7 @@ const Leftsidebar = ({
       </div>
       <div className={styles.logoutSection}>
         <div className={styles.line}></div>
-        <span onClick={logoutApi}>LOGOUT</span>
+        <span onClick={logoutApi}>{loading ? "wait..." : "LOGOUT"}</span>
       </div>
     </div>
   );

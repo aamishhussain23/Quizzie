@@ -61,7 +61,7 @@ const Playquiz = () => {
 
   const handleOptionClick = (option) => {
     const newUserAnswers = [...userAnswers];
-    newUserAnswers[currentQuestionIndex].userAnswer = option;
+    newUserAnswers[currentQuestionIndex].userAnswer = option; // Keep the URLs as they are
     setUserAnswers(newUserAnswers);
   };
 
@@ -75,7 +75,11 @@ const Playquiz = () => {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-        const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: userAnswers }, { withCredentials: true });
+      const encodedUserAnswers = userAnswers.map(answer => ({
+        ...answer,
+        userAnswer: answer.userAnswer.replace(/\./g, '_'), // Encode the URLs before sending them to the backend
+      }));
+      const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: encodedUserAnswers }, { withCredentials: true });
         if (quiz.quizType === 'Poll') {
             toast.success("Thanks for participating in the poll!");
             navigate('/Poll');
@@ -91,6 +95,8 @@ const Playquiz = () => {
         toast.error("Something went wrong");
     }
 };
+
+console.log(userAnswers)
 
   return (
     <div className={styles.parent}>
@@ -109,8 +115,8 @@ const Playquiz = () => {
             return (
               <div key={index} className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} onClick={() => handleOptionClick(option)} >
                 {question.optionType === 'text' ? option : 
-                 question.optionType === 'url' ? <img src={option} alt="Option" /> :
-                 question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl} alt="Option" /><p>{optionText}</p></div> : null}
+ question.optionType === 'url' ? <img src={option.replace(/_/g, '.')} alt="Option" /> :
+ question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl.replace(/_/g, '.')} alt="Option" /><p>{optionText}</p></div> : null}
               </div>
             );
           })}

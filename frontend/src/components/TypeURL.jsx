@@ -14,9 +14,8 @@ const TypeURL = ({questions, setQuestions, currentIndex}) => {
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
-    newOptions[index] = value;
+    newOptions[index] = value.replace(/\./g, '_');
     setOptions(newOptions);
-
     if (questions[currentIndex]) {
       const newQuestions = [...questions];
       newQuestions[currentIndex].options = newOptions;

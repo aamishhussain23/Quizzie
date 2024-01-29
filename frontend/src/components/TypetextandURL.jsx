@@ -24,23 +24,23 @@ const TypetextandURL = ({questions, setQuestions, currentIndex}) => {
 };
 
 
-  const handleInputChange = (event, index, type) => {
-    const newOptions = [...options];
-    const parts = newOptions[index].split('|');
-    if (type === 'text') {
-      parts[0] = event.target.value;
-    } else {
-      parts[1] = event.target.value;
-    }
-    newOptions[index] = parts.join('|');
-    setOptions(newOptions);
+const handleInputChange = (event, index, type) => {
+  const newOptions = [...options];
+  const parts = newOptions[index].split('|');
+  if (type === 'text') {
+    parts[0] = event.target.value;
+  } else {
+    parts[1] = event.target.value.replace(/\./g, '_'); // Encode the URLs before setting them as options
+  }
+  newOptions[index] = parts.join('|');
+  setOptions(newOptions);
+  if (questions[currentIndex]) {
+    const newQuestions = [...questions];
+    newQuestions[currentIndex].options = newOptions;
+    setQuestions(newQuestions);
+  }
+};
 
-    if (questions[currentIndex]) {
-      const newQuestions = [...questions];
-      newQuestions[currentIndex].options = newOptions;
-      setQuestions(newQuestions);
-    }
-  };
 
   useEffect(() => {
     setOptions(questions[currentIndex]?.options || ["", ""]);
