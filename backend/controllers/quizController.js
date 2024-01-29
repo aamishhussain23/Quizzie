@@ -228,7 +228,7 @@ const checkAnswer = async (req, res, next) => {
 
             // Checking if the user answer is correct
             const correctAnswer = dbQuestion.correctAnswer;
-            if (userAnswer && correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
+            if (userAnswer && correctAnswer.toLowerCase() === userAnswer.replace(/_/g, '.').toLowerCase()) {
                 // Incrementing the correct count
                 dbQuestion.correctCount += 1;
                 totalScore += 1; // Increment total score of user
