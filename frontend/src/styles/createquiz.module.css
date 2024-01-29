@@ -49,6 +49,10 @@
     box-shadow: 0 0 15px 0 rgba(114, 107, 107, 0.25);
 }
 
+.border{
+    border: 1px solid red;
+}
+
 .circle > img{
     position: absolute;
     top: 0%;

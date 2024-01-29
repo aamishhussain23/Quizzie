@@ -31,7 +31,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
   const [timer, setTimer] = useState(null);
   const [quiz, setQuiz] = useState(null);
 
-  const questionRefs = questions.map(() => React.createRef());
+  // const questionRefs = questions.map(() => React.createRef());
 
   const getQuiz = async () => {
     try {
@@ -64,19 +64,26 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
     setQuestions(newQuestions);
     setCount(count - 1);
 
-    if (currentIndex >= newQuestions.length) {
-      setCurrentIndex(Math.max(newQuestions.length - 1, 0));
-    }
-
+    let newIndex = currentIndex;
     if (index === currentIndex) {
-      setOptions(newQuestions[currentIndex]?.options || ["", ""]);
-      setCorrectAnswer(newQuestions[currentIndex]?.correctAnswer || null);
+      newIndex = Math.max(newQuestions.length - 1, 0);
+    } else if (index < currentIndex) {
+      newIndex = currentIndex - 1;
     }
+    setCurrentIndex(newIndex);
+
+    setOptions(newQuestions[newIndex]?.options || ["", ""]);
+    setCorrectAnswer(newQuestions[newIndex]?.correctAnswer || null);
   };
 
   const handleClickonCircle = (index) => {
     setCurrentIndex(index);
-    const currentOptionType = questions[index].optionType;
+    let currentOptionType = questions[index].optionType;
+
+    if (currentOptionType === "") {
+      currentOptionType = "text";
+    }
+
     setCurrentOptiontype(currentOptionType);
   };
 
@@ -99,7 +106,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
     setCurrentOptions(questions[currentIndex]?.options || [""]);
   }, [currentIndex, questions]);
 
-  console.log(questions)
+  console.log(questions);
 
   const handleQuizUpdation = async () => {
     // Validation
@@ -144,7 +151,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
       questions: questions,
       timer: timer,
     };
-    console.log(obj)
+    console.log(obj);
     if (flag === true) {
       setLoading(true);
       try {
@@ -173,15 +180,20 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
         <div className={styles.circleAndPlus}>
           {Array.from({ length: count }).map((_, index) => (
             <div
-              ref={questionRefs[index]}
               onClick={() => handleClickonCircle(index)}
               key={index}
-              className={styles.circle}
+              className={`${styles.circle} ${
+                index === currentIndex ? styles.border : ""
+              }`}
             >
-              {index + 1}{" "}
+              {index + 1}
               {count === 1 ? null : (
                 <img
-                  onClick={() => handleRemoveQuestion(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveQuestion(index);
+                    handleClickonCircle(Math.max(index - 1, 0));
+                  }}
                   src={cross}
                   alt="cross img"
                 />
@@ -282,46 +294,39 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
         )}
       </section>
 
-      {
-        
-        quiz && quiz.quizType === "Q&A" ?
-
+      {quiz && quiz.quizType === "Q&A" ? (
         <div className={styles.timer}>
-        <span className={styles.text}>Timer</span>
-        <span
-          style={{
-            backgroundColor: timer === 0 ? "#D60000" : "white",
-            color: timer === 0 ? "white" : "#9F9F9F",
-          }}
-          onClick={() => setTimer(0)}
-        >
-          OFF
-        </span>
-        <span
-          style={{
-            backgroundColor: timer === 5 ? "#D60000" : "white",
-            color: timer === 5 ? "white" : "#9F9F9F",
-          }}
-          onClick={() => setTimer(5)}
-        >
-          5 sec
-        </span>
-        <span
-          style={{
-            backgroundColor: timer === 10 ? "#D60000" : "white",
-            color: timer === 10 ? "white" : "#9F9F9F",
-          }}
-          onClick={() => setTimer(10)}
-        >
-          10 sec
-        </span>
-      </div>
+          <span className={styles.text}>Timer</span>
+          <span
+            style={{
+              backgroundColor: timer === 0 ? "#D60000" : "white",
+              color: timer === 0 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(0)}
+          >
+            OFF
+          </span>
+          <span
+            style={{
+              backgroundColor: timer === 5 ? "#D60000" : "white",
+              color: timer === 5 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(5)}
+          >
+            5 sec
+          </span>
+          <span
+            style={{
+              backgroundColor: timer === 10 ? "#D60000" : "white",
+              color: timer === 10 ? "white" : "#9F9F9F",
+            }}
+            onClick={() => setTimer(10)}
+          >
+            10 sec
+          </span>
+        </div>
+      ) : null}
 
-      :
-
-      null
-      }
-      
       <section className={styles.section_4}>
         <div className={styles.cancelContinue}>
           <button
