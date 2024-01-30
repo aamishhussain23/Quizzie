@@ -23,8 +23,8 @@ const Dashboard = ({ id }) => {
         withCredentials: true,
       });
       setLoading(false);
-      const quizzesByImpressions = data.quizzesByImpressions || [];
-      setQuizes(quizzesByImpressions);
+      const quizzesByImpressionsDesc = data.quizzesByImpressionsDesc || [];
+      setQuizes(quizzesByImpressionsDesc);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     }
