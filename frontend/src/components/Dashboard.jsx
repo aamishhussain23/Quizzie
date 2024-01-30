@@ -7,10 +7,12 @@ import { Context } from "..";
 
 const Dashboard = ({ id }) => {
   const [quizes, setQuizes] = useState([]);
+  const [quizes2, setQuizes2] = useState([]);
   const { user, loading, setLoading } = useContext(Context);
 
   useEffect(() => {
     getAllQuizes();
+    fetchAllQuizes();
   }, [id]);
 
   const getAllQuizes = async () => {
@@ -29,9 +31,26 @@ const Dashboard = ({ id }) => {
       console.error('Error fetching quizzes:', error);
     }
   };
+
+  const fetchAllQuizes = async () => {
+    if (!id) {
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${quizServer}/getAllQuizes/${id}`, {
+        withCredentials: true,
+      });
+      setLoading(false);
+      const quizzesByImpressions = data.quizzesByImpressions || [];
+      setQuizes2(quizzesByImpressions);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+    }
+  };
   
 
-  const totalQuestions = quizes.reduce((total, quiz) => total + quiz.questions.length, 0);
+  const totalQuestions = quizes2.reduce((total, quiz) => total + quiz.questions.length, 0);
 
   // console.log(quizes);
 
@@ -41,7 +60,7 @@ const Dashboard = ({ id }) => {
         <div className={styles.quiz}>
           <p>
             {" "}
-            <span>{quizes.length}</span> Quiz
+            <span>{quizes2.length}</span> Quiz
           </p>
           <p>Created</p>
         </div>
@@ -56,9 +75,9 @@ const Dashboard = ({ id }) => {
           <p>
             {" "}
             <span>
-              {quizes.reduce((total, quiz) => total + quiz.impressions, 0) >= 1000
-                ? (quizes.reduce((total, quiz) => total + quiz.impressions, 0) / 1000).toFixed(1) + " K"
-                : quizes.reduce((total, quiz) => total + quiz.impressions, 0)}
+              {quizes2.reduce((total, quiz) => total + quiz.impressions, 0) >= 1000
+                ? (quizes2.reduce((total, quiz) => total + quiz.impressions, 0) / 1000).toFixed(1) + " K"
+                : quizes2.reduce((total, quiz) => total + quiz.impressions, 0)}
             </span>{" "}
             Total Impressions
           </p>
