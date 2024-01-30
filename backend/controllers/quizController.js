@@ -68,11 +68,15 @@ const getAllQuizes = async (req, res, next) => {
         // Sorting quizzes by creation date
         let quizzesByDate = [...userQuizzesCopy].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
+        // Filtering quizzes with impressions greater than 10 and sorting in descending order
+        let quizzesByImpressionsDesc = quizzesByImpressions.filter(quiz => quiz.impressions > 10);
+
         res.status(200).json({
             success: true,
             totalQuiz: userQuizzesCopy.length,
             quizzesByImpressions: quizzesByImpressions,
-            quizzesByDate: quizzesByDate
+            quizzesByDate: quizzesByDate,
+            quizzesByImpressionsDesc: quizzesByImpressionsDesc
         });
 
     } catch (error) {
@@ -80,6 +84,7 @@ const getAllQuizes = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 };
+
 
 
 const updateQuiz = async (req, res, next) => {
