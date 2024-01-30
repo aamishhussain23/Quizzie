@@ -26,9 +26,9 @@ const createQuiz = async (req, res, next) => {
             quizType,
             questions: questions.map((question) => ({
                 ...question,
-                question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each question
+                question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each word of question
                 totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
-                originalOptions: question.options, // Store the original URLs
+                originalOptions: question.options, // Storing the original URLs
             })),
             timer,
             user: req.user._id,
@@ -107,7 +107,7 @@ const updateQuiz = async (req, res, next) => {
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
         totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
-        originalOptions: question.options, // Store the original URLs
+        originalOptions: question.options, // Storing the original URLs
         correctCount: 0, // Reset correct count
         incorrectCount: 0, // Reset incorrect count
       }));
@@ -205,7 +205,7 @@ const checkAnswer = async (req, res, next) => {
             });
         }
 
-        let totalScore = 0; // Initialize total score
+        let totalScore = 0; // Initializing total score
 
         // Checking each question's answer
         for (const question of questions) {
