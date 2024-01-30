@@ -49,9 +49,9 @@ const Playquiz = () => {
     }
   }, [timer]);
 
-  useEffect(() => {
-    console.log({ quizId: id, questions: userAnswers });
-  }, [timer]);
+  // useEffect(() => {
+  //   console.log({ quizId: id, questions: userAnswers });
+  // }, [timer]);
 
   if (!quiz) {
     return <div>Loading...</div>;
@@ -61,7 +61,7 @@ const Playquiz = () => {
 
   const handleOptionClick = (option) => {
     const newUserAnswers = [...userAnswers];
-    newUserAnswers[currentQuestionIndex].userAnswer = option; // Keep the URLs as they are
+    newUserAnswers[currentQuestionIndex].userAnswer = option; 
     setUserAnswers(newUserAnswers);
   };
 
@@ -77,7 +77,7 @@ const Playquiz = () => {
     try {
       const encodedUserAnswers = userAnswers.map(answer => ({
         ...answer,
-        userAnswer: answer.userAnswer.replace(/\./g, '_'), // Encode the URLs before sending them to the backend
+        userAnswer: answer.userAnswer.replace(/\./g, '_'), 
       }));
       const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: encodedUserAnswers }, { withCredentials: true });
         if (quiz.quizType === 'Poll') {
@@ -96,7 +96,7 @@ const Playquiz = () => {
     }
 };
 
-console.log(userAnswers)
+// console.log(userAnswers)
 
   return (
     <div className={styles.parent}>
@@ -115,8 +115,8 @@ console.log(userAnswers)
             return (
               <div key={index} className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} onClick={() => handleOptionClick(option)} >
                 {question.optionType === 'text' ? option : 
- question.optionType === 'url' ? <img src={option.replace(/_/g, '.')} alt="Option" /> :
- question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl.replace(/_/g, '.')} alt="Option" /><p>{optionText}</p></div> : null}
+                  question.optionType === 'url' ? <img src={option.replace(/_/g, '.')} alt="Option" /> :
+                  question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl.replace(/_/g, '.')} alt="Option" /><p>{optionText}</p></div> : null}
               </div>
             );
           })}

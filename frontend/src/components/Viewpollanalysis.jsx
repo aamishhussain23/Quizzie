@@ -52,9 +52,8 @@ const Viewpollanalysis = ({currentQuizID}) => {
                     <section className={styles.question_div}>
                         {question.options.map((option, optionIndex) => (
                             <div key={optionIndex}>
-                                {/* <span>{console.log(question)}</span> */}
                                 <span>{question.totalParticipants[option] || 0}</span>
-                                <p>{option}</p>
+                                <p>Option {optionIndex + 1}</p>
                             </div>
                         ))}
                     </section>

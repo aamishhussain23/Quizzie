@@ -45,9 +45,9 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
   const handleShareQuiz = (id, type) => {
     let link;
     if (type === "Q&A") {
-      link = `http://localhost:3000/playQuiz/${id}`;
+      link = `https://aamish-hussain-quizzie-app.netlify.app/playQuiz/${id}`;
     } else if (type === "Poll") {
-      link = `http://localhost:3000/Poll/${id}`;
+      link = `https://aamish-hussain-quizzie-app.netlify.app/Poll/${id}`;
     } else {
       link = "";
     }
@@ -58,7 +58,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
           .then(() => toast.success("Link Copied to clipboard"))
           .catch(err => console.error('Failed to copy text: ', err));
       } else {
-        // Clipboard API is not available, use document.execCommand
+        // If Clipboard API is not available, use document.execCommand
         const textarea = document.createElement("textarea");
         textarea.value = link;
         document.body.appendChild(textarea);

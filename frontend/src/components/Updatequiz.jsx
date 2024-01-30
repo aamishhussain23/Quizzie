@@ -21,7 +21,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
   ]);
 
   const { loading, setLoading } = useContext(Context);
-  const [currentOptionType, setCurrentOptiontype] = useState("text");
+  const [currentOptionType, setCurrentOptiontype] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentOptions, setCurrentOptions] = useState([""]);
@@ -30,8 +30,6 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
   const [count, setCount] = useState(1);
   const [timer, setTimer] = useState(null);
   const [quiz, setQuiz] = useState(null);
-
-  // const questionRefs = questions.map(() => React.createRef());
 
   const getQuiz = async () => {
     try {
@@ -98,15 +96,16 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
     setQuestions([...questions, newQuestion]);
     setCount(count + 1);
     setCurrentIndex(count);
-    setCurrentOptiontype("text");
+    // setCurrentOptiontype("text");
   };
 
   useEffect(() => {
     setCurrentQuestion(questions[currentIndex]?.question || "");
     setCurrentOptions(questions[currentIndex]?.options || [""]);
+    setCurrentOptiontype(questions[currentIndex]?.optionType || "text");
   }, [currentIndex, questions]);
 
-  console.log(questions);
+  // console.log(questions);
 
   const handleQuizUpdation = async () => {
     // Validation
@@ -151,7 +150,7 @@ const Updatequiz = ({ updateQuiz, setUpdateQuiz, quizTobeUpdate }) => {
       questions: questions,
       timer: timer,
     };
-    console.log(obj);
+    // console.log(obj);
     if (flag === true) {
       setLoading(true);
       try {

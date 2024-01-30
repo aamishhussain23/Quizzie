@@ -74,7 +74,7 @@ const Createquiz = ({
     setQuestions([...questions, newQuestion]);
     setCount(count + 1);
     setCurrentIndex(count);
-    setCurrentOptiontype("text");
+    // setCurrentOptiontype("text");
   };
 
   useEffect(() => {
@@ -82,8 +82,8 @@ const Createquiz = ({
     setCurrentOptions(questions[currentIndex]?.options || [""]);
   }, [currentIndex, questions]);
 
-  console.log(questions);
-  console.log(currentOptionType);
+  // console.log(questions);
+  // console.log(currentOptionType);
   const handleQuizCreation = async () => {
     // Validation
 
@@ -127,7 +127,7 @@ const Createquiz = ({
       questions: questions,
       timer: timer,
     };
-    console.log(obj);
+    // console.log(obj);
     if (flag === true) {
       setLoading(true);
       try {
@@ -157,8 +157,8 @@ const Createquiz = ({
     questions: questions,
     timer: timer,
   };
-  console.log(obj);
-  console.log(quizType);
+  // console.log(obj);
+  // console.log(quizType);
   return (
     <div className={styles.popup_2} onClick={(e) => e.stopPropagation()}>
       <section className={styles.section_1}>
