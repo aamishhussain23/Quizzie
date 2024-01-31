@@ -46,23 +46,23 @@ const Viewpollanalysis = ({currentQuizID}) => {
             <br />
             <br />
             {quiz.questions.map((question, index) => (
-                <div key={index} className={styles.question_box}>
-                    <h2>Q.{index + 1} {question.question}</h2>
-                    <br />
-                    <section className={styles.question_div}>
-                        {question.options.map((option, optionIndex) => (
-                            <div key={optionIndex}>
-                                <span>{question.totalParticipants[option] || 0}</span>
-                                <p>Option {optionIndex + 1}</p>
-                            </div>
-                        ))}
-                    </section>
-                    <br />
-                    <br />
-                    <hr />
-                    <br />
+    <div key={index} className={styles.question_box}>
+        <h2>Q.{index + 1} {question.question}</h2>
+        <br />
+        <section className={styles.question_div}>
+            {Object.entries(question.totalParticipants).map(([option, count], optionIndex) => (
+                <div key={optionIndex}>
+                    <span>{count}</span>
+                    <p>Option {optionIndex + 1}</p>
                 </div>
             ))}
+        </section>
+        <br />
+        <br />
+        <hr />
+        <br />
+    </div>
+))}
         </div>
     )
 }

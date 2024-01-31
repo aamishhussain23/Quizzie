@@ -77,7 +77,7 @@ const Playquiz = () => {
     try {
       const encodedUserAnswers = userAnswers.map(answer => ({
         ...answer,
-        userAnswer: answer.userAnswer.replace(/\./g, '_'), 
+        userAnswer: answer.userAnswer 
       }));
       const { data } = await axios.post(`${quizServer}/check-answer`, { quizId: id, questions: encodedUserAnswers }, { withCredentials: true });
         if (quiz.quizType === 'Poll') {
@@ -107,7 +107,7 @@ const Playquiz = () => {
         </section>
         <h1>{question.question}</h1>
         <section className={styles.section_2}>
-          {question.options.map((option, index) => {
+        {question.options.map((option, index) => {
             let optionText, optionUrl;
             if (question.optionType === 'textandurl') {
               [optionText, optionUrl] = option.split('|');
@@ -115,8 +115,8 @@ const Playquiz = () => {
             return (
               <div key={index} className={option === userAnswers[currentQuestionIndex]?.userAnswer ? styles.selectedOption : ''} onClick={() => handleOptionClick(option)} >
                 {question.optionType === 'text' ? option : 
-                  question.optionType === 'url' ? <img src={option.replace(/_/g, '.')} alt="Option" /> :
-                  question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl.replace(/_/g, '.')} alt="Option" /><p>{optionText}</p></div> : null}
+                 question.optionType === 'url' ? <img src={option} alt="Option" /> :
+                 question.optionType === 'textandurl' ? <div className={styles.textAndUrl}><img src={optionUrl} alt="Option" /><p>{optionText}</p></div> : null}
               </div>
             );
           })}
