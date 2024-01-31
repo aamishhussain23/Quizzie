@@ -197,7 +197,7 @@ const getQuizForUpdate = async (req, res, next) => {
 
 const checkAnswer = async (req, res, next) => {
     const { quizId } = req.body;
-    const questions = req.body.questions;
+    let questions = req.body.questions;
 
     // Modify the user's answers
     questions = questions.map(question => ({
