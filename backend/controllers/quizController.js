@@ -238,7 +238,7 @@ const checkAnswer = async (req, res, next) => {
             }
 
             // Checking if the user answer is correct
-            const correctAnswer = dbQuestion.correctAnswer;
+            let correctAnswer = dbQuestion.correctAnswer.replace(/\./g, '_');
             if (userAnswer && correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
                 // Incrementing the correct count
                 dbQuestion.correctCount += 1;
