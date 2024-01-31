@@ -22,6 +22,7 @@ const TypeURL = ({questions, setQuestions, currentIndex}) => {
       setQuestions(newQuestions);
     }
   };
+  
 
   const handleDeleteOption = (index) => {
     const newOptions = [...options];

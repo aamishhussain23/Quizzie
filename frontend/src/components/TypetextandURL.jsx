@@ -32,6 +32,7 @@ const handleInputChange = (event, index, type) => {
   } else {
     parts[1] = event.target.value.replace(/\./g, '_'); // Encode the URLs before setting them as options
   }
+  
   newOptions[index] = parts.join('|');
   setOptions(newOptions);
   if (questions[currentIndex]) {

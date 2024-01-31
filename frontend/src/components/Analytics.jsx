@@ -51,6 +51,7 @@ const Analytics = ({quizId, quizType, setAnalytics, setDashboard, getLink, setGe
     } else {
       link = "";
     }
+    
   
     if (link !== "") {
       if (navigator.clipboard) {

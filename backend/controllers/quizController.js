@@ -102,6 +102,7 @@ const updateQuiz = async (req, res, next) => {
           message: "Quiz not found",
         });
       }
+      
   
       // Updating the quiz name and timer
       quizToUpdate.quizName = quizName;

@@ -132,3 +132,4 @@ const Playquiz = () => {
 }
 
 export default Playquiz;
+
