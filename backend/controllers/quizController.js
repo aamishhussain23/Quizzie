@@ -27,8 +27,8 @@ const createQuiz = async (req, res, next) => {
             questions: questions.map((question) => ({
                 ...question,
                 question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()), // Capitalize each word of question
+                correctAnswer: question.correctAnswer.replace(/\./g, '_'),
                 totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
-                originalOptions: question.options, // Storing the original URLs
             })),
             timer,
             user: req.user._id,
@@ -113,7 +113,7 @@ const updateQuiz = async (req, res, next) => {
         ...question,
         question: capitalizeFirstLetterOfEachWord(question.question.toLowerCase()),
         totalParticipants: new Map(Object.entries(question.options.reduce((obj, option) => ({...obj, [option.replace(/\./g, '_')]: 0}), {}))),
-        originalOptions: question.options, // Storing the original URLs
+        correctAnswer: question.correctAnswer.replace(/\./g, '_'),
         correctCount: 0, // Reset correct count
         incorrectCount: 0, // Reset incorrect count
       }));
@@ -198,6 +198,12 @@ const getQuizForUpdate = async (req, res, next) => {
 const checkAnswer = async (req, res, next) => {
     const { quizId } = req.body;
     const questions = req.body.questions;
+
+    // Modify the user's answers
+    questions = questions.map(question => ({
+        ...question,
+        userAnswer: question.userAnswer.replace(/\./g, '_'),
+    }));
 
     try {
         // Finding the quiz 
